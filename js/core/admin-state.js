@@ -1,8 +1,9 @@
 (function(){
   const STORAGE_KEY='voltdrive_admin_v1';
   const seed={
-    platform:{name:'VoltDrive Platform',environment:'Production',region:'Armenia',version:'Admin prototype 1.9'},
+    platform:{name:'VoltDrive Platform',environment:'Production',region:'Armenia',version:'Admin prototype 1.0 final'},
     admin:{id:'ADM-001',name:'Ani Grigoryan',role:'Platform Administrator',initials:'AG',lastLogin:'Today · 09:42',twoFactor:true},
+    currentSession:{userId:'USR-001'},
     companies:[
       {id:'CMP-001',name:'VoltDrive Armenia',legalName:'VoltDrive Armenia LLC',companyType:'Network Operator',registrationNumber:'286.110.12345',taxId:'02861101',countryCode:'AM',country:'Armenia',currency:'AMD',timezone:'Asia/Yerevan',primaryBrand:'VoltDrive',brands:['VoltDrive'],sites:12,users:84,admins:5,billingProfile:'Complete',taxProfile:'VAT 20%',settlementProfile:'Direct operator',paymentProfile:'Ameriabank Gateway',contactEmail:'admin@voltdrive.am',address:'Yerevan, Armenia',status:'active',createdAt:'2025-11-03',lastUpdated:'2026-08-16 18:42'},
       {id:'CMP-002',name:'Ararat Mobility',legalName:'Ararat Mobility CJSC',companyType:'Fleet & Site Operator',registrationNumber:'264.120.40891',taxId:'02641204',countryCode:'AM',country:'Armenia',currency:'AMD',timezone:'Asia/Yerevan',primaryBrand:'Ararat Charge',brands:['Ararat Charge','Ararat Fleet'],sites:7,users:41,admins:3,billingProfile:'Complete',taxProfile:'VAT 20%',settlementProfile:'Revenue share',paymentProfile:'VoltDrive managed',contactEmail:'ops@araratmobility.am',address:'Yerevan, Armenia',status:'active',createdAt:'2026-01-14',lastUpdated:'2026-08-17 08:22'},
@@ -36,7 +37,7 @@
     ],
     permissionCatalog:[
       {group:'Organization',items:[
-        {id:'companies.view',label:'View companies'},{id:'companies.manage',label:'Manage companies'},{id:'users.view',label:'View users'},{id:'users.manage',label:'Manage users'},{id:'roles.manage',label:'Manage roles & permissions'}
+        {id:'admin.portal.view',label:'Access Admin Portal'},{id:'companies.view',label:'View companies'},{id:'companies.manage',label:'Manage companies'},{id:'users.view',label:'View users'},{id:'users.manage',label:'Manage users'},{id:'roles.manage',label:'Manage roles & permissions'},{id:'markets.view',label:'View countries & currencies'},{id:'markets.manage',label:'Manage countries & currencies'}
       ]},
       {group:'Network Operations',items:[
         {id:'chargers.view',label:'View chargers'},{id:'chargers.remote.restart',label:'Restart chargers remotely'},{id:'chargers.disable',label:'Disable chargers/connectors'},{id:'sessions.view',label:'View charging sessions'},{id:'sessions.force_stop',label:'Force-stop charging sessions'},{id:'reservations.manage',label:'Manage reservations'},{id:'emergency.site_shutdown',label:'Emergency site shutdown'}
@@ -45,22 +46,22 @@
         {id:'fleet.view',label:'View fleet data'},{id:'fleet.manage',label:'Manage fleet charging'},{id:'maintenance.view',label:'View maintenance'},{id:'maintenance.manage',label:'Manage maintenance jobs'},{id:'diagnostics.remote',label:'Run remote diagnostics'}
       ]},
       {group:'Commercial',items:[
-        {id:'tariffs.view',label:'View tariffs'},{id:'tariffs.edit',label:'Edit & publish tariffs'},{id:'payments.view',label:'View payments'},{id:'payments.refund',label:'Issue refunds'},{id:'settlements.manage',label:'Manage partner settlements'},{id:'taxes.manage',label:'Manage tax profiles'}
+        {id:'tariffs.view',label:'View tariffs'},{id:'tariffs.edit',label:'Edit & publish tariffs'},{id:'taxes.view',label:'View tax profiles'},{id:'taxes.manage',label:'Manage tax profiles'},{id:'payments.view',label:'View payments'},{id:'payments.manage',label:'Manage payment configuration'},{id:'payments.refund',label:'Issue refunds'},{id:'settlements.view',label:'View partner settlements'},{id:'settlements.manage',label:'Manage partner settlements'}
       ]},
       {group:'Platform & Security',items:[
-        {id:'integrations.view',label:'View integrations'},{id:'integrations.manage',label:'Manage ERP/API integrations'},{id:'roaming.manage',label:'Manage roaming configuration'},{id:'firmware.manage',label:'Manage firmware campaigns'},{id:'security.certificates.manage',label:'Manage certificates'},{id:'audit.view',label:'View audit log'},{id:'platform.settings.manage',label:'Manage platform settings'}
+        {id:'integrations.view',label:'View integrations'},{id:'integrations.manage',label:'Manage ERP/API integrations'},{id:'roaming.view',label:'View roaming configuration'},{id:'roaming.manage',label:'Manage roaming configuration'},{id:'firmware.view',label:'View firmware campaigns'},{id:'firmware.manage',label:'Manage firmware campaigns'},{id:'security.view',label:'View security & certificates'},{id:'security.certificates.manage',label:'Manage certificates'},{id:'ai.view',label:'View AI & automation'},{id:'ai.manage',label:'Manage AI & automation'},{id:'energy.view',label:'View energy optimization'},{id:'energy.manage',label:'Manage energy optimization'},{id:'audit.view',label:'View audit log'},{id:'reports.manage',label:'Manage reports & exports'},{id:'platform.settings.view',label:'View platform settings'},{id:'platform.settings.manage',label:'Manage platform settings'}
       ]}
     ],
     roles:[
       {id:'ROLE-PLATFORM-ADMIN',name:'Platform Admin',description:'Full platform administration across all companies and modules.',type:'system',privileged:true,scopeModel:'Platform',permissions:['*'],users:2},
-      {id:'ROLE-COMPANY-ADMIN',name:'Company Admin',description:'Administration limited to one company and its operating scope.',type:'system',privileged:true,scopeModel:'Company',permissions:['companies.view','users.view','users.manage','chargers.view','sessions.view','reservations.manage','fleet.view','fleet.manage','maintenance.view','tariffs.view','payments.view','integrations.view','audit.view'],users:9},
+      {id:'ROLE-COMPANY-ADMIN',name:'Company Admin',description:'Administration limited to one company and its operating scope.',type:'system',privileged:true,scopeModel:'Company',permissions:['admin.portal.view','companies.view','users.view','users.manage','markets.view','chargers.view','sessions.view','reservations.manage','fleet.view','fleet.manage','maintenance.view','tariffs.view','taxes.view','payments.view','settlements.view','integrations.view','audit.view'],users:9},
       {id:'ROLE-OP-SUPERVISOR',name:'Operator Supervisor',description:'Extended network operations including restricted remote controls.',type:'system',privileged:true,scopeModel:'Company / Region / Site',permissions:['chargers.view','chargers.remote.restart','chargers.disable','sessions.view','sessions.force_stop','reservations.manage','maintenance.view','diagnostics.remote','payments.view','audit.view'],users:11},
       {id:'ROLE-OPERATOR',name:'Operator',description:'Daily network operations without high-risk administrative privileges.',type:'system',privileged:false,scopeModel:'Region / Site',permissions:['chargers.view','chargers.remote.restart','sessions.view','reservations.manage','maintenance.view','payments.view'],users:34},
       {id:'ROLE-FLEET-MANAGER',name:'Fleet Manager',description:'Fleet readiness, depot charging, vehicles, schedules and fleet energy.',type:'system',privileged:false,scopeModel:'Company / Depot',permissions:['fleet.view','fleet.manage','chargers.view','sessions.view','reservations.manage'],users:28},
       {id:'ROLE-TECHNICIAN',name:'Technician',description:'Field maintenance, diagnostics, parts and service completion.',type:'system',privileged:false,scopeModel:'Region / Site',permissions:['chargers.view','maintenance.view','maintenance.manage','diagnostics.remote'],users:31},
-      {id:'ROLE-FINANCE',name:'Finance',description:'Payments, invoices, taxes, settlements and financial reporting.',type:'system',privileged:true,scopeModel:'Company',permissions:['payments.view','payments.refund','tariffs.view','settlements.manage','taxes.manage','integrations.view','audit.view'],users:12},
+      {id:'ROLE-FINANCE',name:'Finance',description:'Payments, invoices, taxes, settlements and financial reporting.',type:'system',privileged:true,scopeModel:'Company',permissions:['admin.portal.view','payments.view','payments.refund','tariffs.view','taxes.view','taxes.manage','settlements.view','settlements.manage','integrations.view','audit.view','reports.manage'],users:12},
       {id:'ROLE-SUPPORT',name:'Support Agent',description:'Customer support context with limited session and payment visibility.',type:'system',privileged:false,scopeModel:'Company / Region',permissions:['sessions.view','reservations.manage','payments.view','chargers.view'],users:18},
-      {id:'ROLE-AUDITOR',name:'Read Only / Auditor',description:'Read-only visibility for governance and compliance review.',type:'system',privileged:false,scopeModel:'Platform / Company',permissions:['companies.view','users.view','chargers.view','sessions.view','maintenance.view','tariffs.view','payments.view','integrations.view','audit.view'],users:8}
+      {id:'ROLE-AUDITOR',name:'Read Only / Auditor',description:'Read-only visibility for governance and compliance review.',type:'system',privileged:false,scopeModel:'Platform / Company',permissions:['admin.portal.view','companies.view','users.view','markets.view','chargers.view','sessions.view','maintenance.view','tariffs.view','taxes.view','payments.view','settlements.view','roaming.view','integrations.view','firmware.view','security.view','ai.view','energy.view','audit.view','platform.settings.view'],users:8}
     ],
     invitations:[
       {id:'INV-201',name:'Karen Grigoryan',email:'karen.g@nreroute.ge',companyId:'CMP-004',roleId:'ROLE-COMPANY-ADMIN',scope:'North Route Energy · Georgia',status:'sent',twoFactorRequired:true,sentAt:'Aug 12 · 14:30',expiresAt:'Aug 19 · 14:30'},
@@ -353,6 +354,7 @@
   }
   let state;
   try{state=merge(seed,JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'));}catch(e){state=JSON.parse(JSON.stringify(seed));}
+  state.currentSession={...seed.currentSession,...(state.currentSession||{})};
   if(!Array.isArray(state.integrations)) state.integrations=JSON.parse(JSON.stringify(seed.integrations));
   seed.integrations.forEach(item=>{if(!state.integrations.some(x=>x.id===item.id))state.integrations.push(JSON.parse(JSON.stringify(item)));});
   const countrySeedByCode=Object.fromEntries(seed.countries.map(c=>[c.code,c]));
@@ -545,14 +547,31 @@
     if(text.includes('blocked')||text.includes('warning')||text.includes('review')||text.includes('approval')||text.includes('timeout')||text.includes('failed')||text.includes('expire')) return 'warning';
     return 'info';
   }
-  const today='2026-08-17';
-  state.audit=(Array.isArray(state.audit)?state.audit:[]).map((item,index)=>({id:item.id||`AUD-${String(index+1).padStart(3,'0')}`,date:item.date||today,time:item.time||'—',icon:item.icon||'•',module:item.module||inferAuditModule(item),actor:item.actor||state.admin?.name||'Platform Administrator',severity:item.severity||inferAuditSeverity(item),title:item.title||'Administrative action',detail:item.detail||'',source:item.source||'Admin Portal',...item}));
+  function platformTimeZone(){return state.platformSettings?.general?.timezone||'Asia/Yerevan';}
+  function dateParts(date=new Date()){
+    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:platformTimeZone(),year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date);
+    return Object.fromEntries(parts.filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
+  }
+  function today(date=new Date()){const p=dateParts(date);return `${p.year}-${p.month}-${p.day}`;}
+  function timeNow(date=new Date()){const p=dateParts(date);return `${p.hour}:${p.minute}`;}
+  function now(date=new Date()){return `${today(date)} ${timeNow(date)}`;}
+  function addDays(days,date=new Date()){const d=new Date(date.getTime()+Number(days||0)*86400000);return today(d);}
+  function addYears(years,date=new Date()){const d=new Date(date);d.setUTCFullYear(d.getUTCFullYear()+Number(years||0));return today(d);}
+  function currentUser(){return state.userDirectory?.find(u=>u.id===state.currentSession?.userId)||state.userDirectory?.find(u=>u.name===state.admin?.name)||null;}
+  function currentRole(){const user=currentUser();return state.roles?.find(r=>r.id===user?.roleId)||null;}
+  function can(permission){const role=currentRole();return Boolean(role&&(role.permissions?.includes('*')||role.permissions?.includes(permission)));}
+  function isPlatformScope(){const role=currentRole();return Boolean(role&&(role.permissions?.includes('*')||role.scopeModel==='Platform'));}
+  function companyInScope(companyId){const user=currentUser(),role=currentRole();if(!user||!role)return false;if(isPlatformScope())return true;return !companyId||user.companyId===companyId;}
+  function requirePermission(permission,message='You do not have permission to perform this action.'){if(can(permission))return true;queueMicrotask(()=>window.AdminUI?.toast?.(message));return false;}
+  const auditToday=today();
+  state.audit=(Array.isArray(state.audit)?state.audit:[]).map((item,index)=>({id:item.id||`AUD-${String(index+1).padStart(3,'0')}`,date:item.date||auditToday,time:item.time||'—',icon:item.icon||'•',module:item.module||inferAuditModule(item),actor:item.actor||currentUser()?.name||state.admin?.name||'Platform Administrator',severity:item.severity||inferAuditSeverity(item),title:item.title||'Administrative action',detail:item.detail||'',source:item.source||'Admin Portal',companyId:item.companyId!==undefined?item.companyId:((currentRole()?.scopeModel||'').startsWith('Platform')?'':(currentUser()?.companyId||'')),...item}));
+  function addAudit(item){const entry={id:item.id||`AUD-${Date.now()}`,date:item.date||today(),time:item.time||timeNow(),icon:item.icon||'•',module:item.module||inferAuditModule(item),actor:item.actor||currentUser()?.name||state.admin?.name||'Platform Administrator',severity:item.severity||inferAuditSeverity(item),title:item.title||'Administrative action',detail:item.detail||'',source:item.source||'Admin Portal',companyId:item.companyId!==undefined?item.companyId:(isPlatformScope()?'':(currentUser()?.companyId||''))};state.audit.unshift(entry);state.audit=state.audit.slice(0,250);return entry;}
   seed.audit.forEach(item=>{if(!state.audit.some(x=>x.id===item.id))state.audit.push(JSON.parse(JSON.stringify(item)));});
   const companySeedById=Object.fromEntries(seed.companies.map(c=>[c.id,c]));
   state.companies=(Array.isArray(state.companies)?state.companies:[]).map((company,index)=>{
     const country=seed.countries.find(c=>c.name===company.country||c.code===company.countryCode);
     const fallback={
-      id:company.id||`CMP-${String(index+1).padStart(3,'0')}`,name:'Untitled company',legalName:'',companyType:'Network Operator',registrationNumber:'—',taxId:'—',countryCode:country?.code||'AM',country:country?.name||'Armenia',currency:country?.currency||'AMD',timezone:country?.timezone||'Asia/Yerevan',primaryBrand:company.name||'VoltDrive',brands:[company.name||'VoltDrive'],sites:0,users:0,admins:1,billingProfile:'Incomplete',taxProfile:country?.taxProfile||'Not configured',settlementProfile:'Not configured',paymentProfile:'Not configured',contactEmail:'Not configured',address:country?.name||'Not configured',status:'setup',createdAt:'2026-08-17',lastUpdated:'2026-08-17 11:07'
+      id:company.id||`CMP-${String(index+1).padStart(3,'0')}`,name:'Untitled company',legalName:'',companyType:'Network Operator',registrationNumber:'—',taxId:'—',countryCode:country?.code||'AM',country:country?.name||'Armenia',currency:country?.currency||'AMD',timezone:country?.timezone||'Asia/Yerevan',primaryBrand:company.name||'VoltDrive',brands:[company.name||'VoltDrive'],sites:0,users:0,admins:1,billingProfile:'Incomplete',taxProfile:country?.taxProfile||'Not configured',settlementProfile:'Not configured',paymentProfile:'Not configured',contactEmail:'Not configured',address:country?.name||'Not configured',status:'setup',createdAt:today(),lastUpdated:now()
     };
     return {...fallback,...(companySeedById[company.id]||{}),...company};
   });
@@ -561,12 +580,20 @@
     const invitations=Array.isArray(state.invitations)?state.invitations:[];
     const requests=Array.isArray(state.accessRequests)?state.accessRequests:[];
     const roles=Array.isArray(state.roles)?state.roles:[];
-    state.users.active=Math.max(169,directory.filter(u=>u.status==='active').length);
+    const directoryActive=directory.filter(u=>u.status==='active');
+    const aggregateUsers=(state.companies||[]).reduce((sum,c)=>sum+(Number(c.users)||0),0);
+    state.users.active=aggregateUsers||directoryActive.length;
+    state.users.directoryTotal=directory.length;
+    state.users.directoryActive=directoryActive.length;
     state.users.pendingInvites=invitations.filter(i=>['sent','draft'].includes(i.status)).length;
     state.users.pendingApprovals=requests.filter(r=>r.status==='review').length;
-    state.users.without2fa=Math.max(0,directory.filter(u=>u.status==='active'&&!u.twoFactor).length);
-    state.users.privileged=Math.max(14,directory.filter(u=>roles.find(r=>r.id===u.roleId)?.privileged&&u.status==='active').length);
-    state.security.twoFactorCoverage=Math.round((directory.filter(u=>u.status==='active'&&u.twoFactor).length/Math.max(1,directory.filter(u=>u.status==='active').length))*100);
+    state.users.directoryWithout2fa=directoryActive.filter(u=>!u.twoFactor).length;
+    state.users.without2fa=state.users.directoryWithout2fa;
+    state.users.directoryPrivileged=directoryActive.filter(u=>roles.find(r=>r.id===u.roleId)?.privileged).length;
+    state.users.privileged=Math.max(Number(seed.users.privileged)||0,state.users.directoryPrivileged);
+    state.security.platformTwoFactorCoverage=Number(state.security.platformTwoFactorCoverage??seed.security.twoFactorCoverage??0);
+    state.security.directoryTwoFactorCoverage=Math.round((directoryActive.filter(u=>u.twoFactor).length/Math.max(1,directoryActive.length))*100);
+    state.security.twoFactorCoverage=state.security.platformTwoFactorCoverage;
     state.security.privilegedUsers=state.users.privileged;
     if(Array.isArray(state.taxProfiles)) state.tariffs.taxProfiles=state.taxProfiles.length;
     if(Array.isArray(state.tariffProfiles)){
@@ -635,5 +662,5 @@
     const max=(collection||[]).reduce((n,item)=>Math.max(n,Number(String(item.id||'').replace(/\D/g,''))||0),0);
     return `${prefix}-${String(max+1).padStart(3,'0')}`;
   }
-  window.VoltDriveAdmin={getState:()=>state,save,reset,nextId,storageKey:STORAGE_KEY};
+  window.VoltDriveAdmin={getState:()=>state,save,reset,nextId,storageKey:STORAGE_KEY,today,timeNow,now,addDays,addYears,addAudit,currentUser,currentRole,can,isPlatformScope,requirePermission,companyInScope,setCurrentUser:(userId)=>{if(state.userDirectory?.some(u=>u.id===userId)){state.currentSession.userId=userId;save();return true;}return false;}};
 })();

@@ -8,7 +8,7 @@
   function closeDrawer(){$('#drawer-backdrop').classList.remove('is-open');$('#admin-drawer').classList.remove('is-open');}
   $('#drawer-close').onclick=closeDrawer;$('#drawer-backdrop').onclick=closeDrawer;
   function nowLabel(){return new Date().toISOString().slice(0,16).replace('T',' ')}
-  function addAudit(icon,title,detail){state.audit.unshift({id:`AUD-${Date.now()}`,time:'Now',icon,title,detail});state.audit=state.audit.slice(0,14);}
+  function addAudit(icon,title,detail){api.addAudit({icon,title,detail});state.audit=state.audit.slice(0,250);}
   function persist(){api.save();state=api.getState();}
   function renderKpis(){const models=state.aiModels||[],rules=state.automationRules||[],approvals=state.aiApprovals||[];$('#ai-kpi-models').textContent=models.filter(x=>x.status==='active').length;$('#ai-kpi-rules').textContent=rules.filter(x=>x.status==='active').length;$('#ai-kpi-approvals').textContent=approvals.filter(x=>x.status==='review').length;$('#ai-kpi-health').textContent=`${state.ai?.forecastHealth||0}%`;$('#ai-kpi-evaluated').textContent=models.filter(x=>x.lastEvaluated&&x.lastEvaluated!=='Never').length;$('#ai-kpi-actions').textContent=rules.reduce((n,x)=>n+Number(x.runs30d||0),0);$('#ai-nav-badge').textContent=approvals.filter(x=>x.status==='review').length;}
   function populateCapability(){const sel=$('#model-capability'),cur=sel.value||'all';const caps=[...new Set((state.aiModels||[]).map(x=>x.capability))].sort();sel.innerHTML='<option value="all">All capabilities</option>'+caps.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');sel.value=caps.includes(cur)?cur:'all';}

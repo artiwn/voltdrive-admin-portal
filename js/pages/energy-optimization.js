@@ -8,7 +8,7 @@
   function closeDrawer(){$('#admin-drawer').classList.remove('is-open');$('#drawer-backdrop').classList.remove('is-visible')}
   $('#drawer-close').onclick=closeDrawer;$('#drawer-backdrop').onclick=closeDrawer;
   function detailGrid(items){return `<div class="ui-detail-grid">${items.map(([a,b])=>`<div><span>${esc(a)}</span><strong>${esc(b)}</strong></div>`).join('')}</div>`}
-  function addAudit(icon,title,detail){state.audit.unshift({id:api.nextId('AUD',state.audit),date:nowLabel().slice(0,10),time:nowLabel().slice(11),icon,module:'Energy & Load Optimization',actor:state.admin.name,severity:'info',title,detail,source:'Admin Portal'});}
+  function addAudit(icon,title,detail){api.addAudit({icon,module:'Energy & Load Optimization',severity:'info',title,detail});}
   function persist(){api.save();state=api.getState()}
   function renderKpis(){const e=state.energy;$('#energy-kpi-sites').textContent=e.managedSites;$('#energy-kpi-capacity').textContent=`${e.totalCapacityKw.toLocaleString()} kW`;$('#energy-kpi-headroom').textContent=`${e.safetyHeadroomKw} kW`;$('#energy-kpi-active').textContent=e.activePolicies;$('#energy-kpi-dr').textContent=e.demandResponseSites;$('#energy-kpi-issues').textContent=e.setupIssues;}
   function fillFilters(){const select=$('#energy-site-strategy'),current=select.value||'all';const vals=[...new Set(state.energySites.map(x=>x.strategy))].sort();select.innerHTML='<option value="all">All strategies</option>'+vals.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');select.value=vals.includes(current)?current:'all';}
