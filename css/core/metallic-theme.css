@@ -1,0 +1,505 @@
+/* VoltDrive Admin Portal — Metallic Theme
+   Visual compatibility layer based on the approved VoltDrive metallic UI.
+   DOM structure, page layout contracts and JavaScript hooks remain untouched. */
+
+:root{
+  --color-bg:#090a0b;
+  --color-bg-elevated:#111315;
+  --color-card:#171a1c;
+  --color-surface:#23272a;
+  --color-surface-2:#1b1f22;
+  --color-text:#f4f6f8;
+  --color-text-muted:#9aa3a9;
+  --color-text-soft:#737d83;
+  --color-primary:#d9dde0;
+  --color-primary-hover:#eef1f3;
+  --color-success:#45d48b;
+  --color-warning:#f5b942;
+  --color-error:#ff5f57;
+  --color-info:#72a7ff;
+  --color-border:rgba(255,255,255,.095);
+  --color-border-strong:rgba(255,255,255,.17);
+  --shadow-card:0 22px 54px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.055);
+
+  /* Compatibility aliases used by late access-control UI. */
+  --color-text-primary:var(--color-text);
+  --color-text-secondary:var(--color-text-muted);
+  --color-surface-card:var(--color-card);
+  --color-surface-secondary:#1b1f22;
+  --color-surface-elevated:#202529;
+  --color-surface-raised:#292f33;
+  --surface-card:var(--color-card);
+  --surface-secondary:#1b1f22;
+  --text-secondary:var(--color-text-muted);
+  --border-subtle:rgba(255,255,255,.095);
+}
+
+html{color-scheme:dark}
+body.app-page{
+  background:
+    radial-gradient(circle at 17% 7%,rgba(112,122,128,.22) 0,rgba(42,47,50,.12) 21%,transparent 40%),
+    radial-gradient(circle at 92% 91%,rgba(76,84,89,.10),transparent 31%),
+    linear-gradient(145deg,#0d0f10 0%,#090a0b 48%,#070809 100%) !important;
+  color:var(--color-text);
+}
+body.app-page::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
+}
+
+*{scrollbar-color:#42494e #111315}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#111315}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#4a5257,#2b3034);
+  border:2px solid #111315;
+  border-radius:999px;
+}
+
+/* --------------------------------------------------------------------------
+   Application shell / sidebar / topbar
+   -------------------------------------------------------------------------- */
+.sidebar{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  background:
+    linear-gradient(180deg,rgba(35,39,42,.97) 0%,rgba(18,21,23,.985) 38%,rgba(10,12,13,.995) 100%) !important;
+  border-right-color:rgba(255,255,255,.10) !important;
+  box-shadow:inset -1px 0 0 rgba(255,255,255,.025),20px 0 60px rgba(0,0,0,.18);
+}
+.sidebar__brand{flex:0 0 auto}
+.sidebar__brand strong{color:#f4f6f8}
+.sidebar__brand span{color:#89939a !important}
+.sidebar__nav{
+  flex:0 0 auto !important;
+  min-height:auto !important;
+  overflow:visible !important;
+  padding-bottom:18px;
+}
+.sidebar__group-title{color:#737d83 !important}
+.nav-link{
+  border:1px solid transparent;
+  transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
+}
+.nav-link:hover{
+  background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025)) !important;
+  border-color:rgba(255,255,255,.045);
+  color:#f4f6f8 !important;
+}
+.nav-link.is-active{
+  background:linear-gradient(135deg,rgba(220,225,228,.18),rgba(112,123,130,.07)) !important;
+  border-color:rgba(255,255,255,.075);
+  color:#f5f7f8 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 0 0 1px rgba(255,255,255,.025);
+}
+.nav-link__icon{color:#aab3b8 !important}
+.nav-link.is-active .nav-link__icon{color:#eef2f4 !important}
+.nav-link__badge{
+  background:linear-gradient(145deg,#e6eaec,#929ba1) !important;
+  color:#121517 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 5px 14px rgba(0,0,0,.22);
+}
+.sidebar__footer{
+  position:sticky !important;
+  bottom:-1px !important;
+  z-index:2;
+  flex:0 0 auto !important;
+  margin-top:auto !important;
+  padding-top:18px !important;
+  padding-bottom:18px !important;
+  background:linear-gradient(180deg,rgba(12,14,15,.44),rgba(9,10,11,.98) 28%) !important;
+  border-top-color:rgba(255,255,255,.09) !important;
+  box-shadow:0 -18px 28px rgba(9,10,11,.42);
+}
+.sidebar-user__avatar{
+  background:linear-gradient(145deg,#3d4448,#1d2124 64%,#111315) !important;
+  border:1px solid rgba(255,255,255,.10);
+  color:#eef2f4;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 20px rgba(0,0,0,.18);
+}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.sidebar::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#4a5257,#2b3034);
+  border:0;
+  border-radius:999px;
+}
+
+.topbar{
+  background:rgba(14,16,17,.84) !important;
+  border-bottom-color:rgba(255,255,255,.10) !important;
+  box-shadow:0 12px 32px rgba(0,0,0,.16),inset 0 -1px 0 rgba(255,255,255,.02);
+  backdrop-filter:blur(22px) saturate(115%);
+}
+.topbar__title h1{color:#f5f7f8}
+.topbar__title p{color:#929ca2 !important}
+.platform-chip{
+  background:linear-gradient(145deg,rgba(50,213,131,.13),rgba(31,46,39,.45)) !important;
+  border-color:rgba(69,212,139,.24) !important;
+  color:#77dfa8 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045);
+}
+
+/* --------------------------------------------------------------------------
+   Controls / forms
+   -------------------------------------------------------------------------- */
+.icon-button,.ui-close,.action-button{
+  background:linear-gradient(145deg,#202427,#131618) !important;
+  border-color:rgba(255,255,255,.115) !important;
+  color:#eef1f3 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055);
+}
+.icon-button:hover,.ui-close:hover,.action-button:hover{
+  background:linear-gradient(145deg,#292e32,#171a1c) !important;
+  border-color:rgba(255,255,255,.18) !important;
+}
+.action-button--primary{
+  background:linear-gradient(145deg,rgba(221,226,229,.19),rgba(115,126,133,.08)) !important;
+  border-color:rgba(255,255,255,.14) !important;
+  color:#eef2f4 !important;
+}
+
+.button--primary{
+  background:linear-gradient(135deg,#f3f5f6 0%,#c7cdd1 48%,#929ba1 100%) !important;
+  color:#15191b !important;
+  border:1px solid rgba(255,255,255,.38) !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.26),inset 0 1px 0 #fff;
+}
+.button--primary:hover{
+  background:linear-gradient(135deg,#fff 0%,#dce1e4 50%,#a8b0b5 100%) !important;
+}
+.button--primary :is(span,strong,svg,path){color:#15191b !important;fill:currentColor;stroke:currentColor}
+.button--secondary{
+  background:linear-gradient(145deg,#202427,#131618) !important;
+  border-color:rgba(255,255,255,.115) !important;
+  color:#eef1f3 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055);
+}
+.button--secondary:hover{
+  background:linear-gradient(145deg,#292e32,#171a1c) !important;
+  border-color:rgba(255,255,255,.18) !important;
+}
+.button--danger{
+  background:linear-gradient(145deg,rgba(88,33,31,.74),rgba(43,23,23,.82)) !important;
+  border-color:rgba(255,95,87,.28) !important;
+  color:#ff8a84 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.button--danger:hover{
+  background:linear-gradient(145deg,rgba(106,38,35,.78),rgba(50,25,24,.88)) !important;
+  border-color:rgba(255,95,87,.4) !important;
+}
+
+:is(.form-field input,.form-field textarea,.form-field select,.ui-select,.ui-search input,
+.company-search input,.market-search input,.tariff-search input,.tax-search input,.payment-search input,
+.partner-search input,.roaming-search input,.integration-search input,.access-search input){
+  background-color:#101315 !important;
+  color:#eef2f4 !important;
+  border-color:rgba(255,255,255,.105) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+:is(.form-field input,.form-field textarea,.form-field select,.ui-select,
+.company-search input,.market-search input,.tariff-search input,.tax-search input,.payment-search input,
+.partner-search input,.roaming-search input,.integration-search input,.access-search input):focus{
+  border-color:rgba(207,214,218,.52) !important;
+  box-shadow:0 0 0 4px rgba(199,205,209,.08),inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+:is(input,textarea)::placeholder{color:#727b81 !important}
+:is(select,.ui-select) option{background:#15181a !important;color:#eef2f4 !important}
+input[type="checkbox"],input[type="radio"]{accent-color:#bfc6ca}
+
+:is(.unit-input,.money-input){
+  background:linear-gradient(145deg,#202427,#131618) !important;
+  border-color:rgba(255,255,255,.105) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+
+/* --------------------------------------------------------------------------
+   Core metallic surfaces
+   -------------------------------------------------------------------------- */
+:is(
+  .panel,.kpi-card,.settings-section,.health-row,.attention-entry,.summary-stat,.security-card,.quick-link,
+  .scope-card,.setup-item,.company-section-row,.readiness-item,.currency-summary-card,.market-detail-row,
+  .permission-group,.access-summary-row,.permission-edit-group,.tariff-market,.tariff-check,.tariff-detail-row,
+  .pricing-card,.tax-readiness-item,.tax-preview__result>div,.tax-detail-row,.tax-component-card,.tax-check,
+  .method-row,.readiness-row,.policy-item,.payment-detail-row,.payment-check,.sharing-row,.settlement-readiness-row,
+  .flow-step,.partner-detail-row,.partner-check,.roaming-readiness-row,.coverage-row,.dispute-card,
+  .roaming-policy-item,.roaming-detail-row,.roaming-check,.integration-object,.identity-security-card,
+  .control-card,.security-event,.security-policy-item,.forecast-card,.approval-card,.boundary-item,.ai-policy-item,
+  .energy-readiness__item,.der-item,.dr-card,.sim-summary>div,.allocation-row,.energy-policy-item,
+  .coverage-item,.event-item,.rollout-card,.firmware-policy-item,.policy-card,
+  .setting-value,.inheritance-flow>div,.boundary-stack>a,.change-rules article,.review-item,
+  .checkbox-item,.checkbox-field,.ui-detail-grid>div,.ui-callout,.access-denied-panel
+){
+  background:linear-gradient(145deg,rgba(31,35,38,.97) 0%,rgba(18,21,23,.98) 60%,rgba(25,29,31,.97) 100%) !important;
+  border-color:rgba(255,255,255,.105) !important;
+  box-shadow:0 16px 38px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.052);
+}
+
+:is(
+  .health-row,.attention-entry,.quick-link,.scope-card,.setup-item,.company-section-row,.readiness-item,
+  .tariff-market,.method-row,.readiness-row,.sharing-row,.settlement-readiness-row,.dispute-card,
+  .roaming-readiness-row,.coverage-row,.security-event,.boundary-stack>a,.review-item
+):hover{
+  border-color:rgba(255,255,255,.18) !important;
+  background:linear-gradient(145deg,#30363a,#1b1f22) !important;
+}
+
+/* Premium admin hero surfaces */
+:is(
+  .admin-hero,.companies-hero,.access-hero,.market-hero,.tariff-hero,.tax-hero,.payment-hero,.partner-hero,
+  .roaming-hero,.integration-hero,.firmware-hero,.security-hero,.ai-hero,.energy-hero,.reports-hero,.settings-hero
+){
+  background:
+    radial-gradient(circle at 82% 8%,rgba(255,255,255,.14),transparent 30%),
+    linear-gradient(145deg,#33393d 0%,#1a1e20 46%,#111315 72%,#252a2d 100%) !important;
+  border-color:rgba(255,255,255,.14) !important;
+  box-shadow:0 22px 48px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.09) !important;
+}
+:is(
+  .admin-hero,.companies-hero,.access-hero,.market-hero,.tariff-hero,.tax-hero,.payment-hero,.partner-hero,
+  .roaming-hero,.integration-hero,.firmware-hero,.security-hero,.ai-hero,.energy-hero,.reports-hero,.settings-hero
+) h2{
+  color:#f5f7f8;
+  text-shadow:0 1px 0 rgba(255,255,255,.04);
+}
+:is(
+  .admin-hero,.companies-hero,.access-hero,.market-hero,.tariff-hero,.tax-hero,.payment-hero,.partner-hero,
+  .roaming-hero,.integration-hero,.firmware-hero,.security-hero,.ai-hero,.energy-hero,.reports-hero,.settings-hero
+) p{color:#98a2a8 !important}
+
+.panel{overflow:hidden}
+.panel__header,.ui-drawer__header,.ui-drawer__footer{border-color:rgba(255,255,255,.095) !important}
+.panel__header{background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0))}
+.panel-chip,.mini-chip,.mode-chip,.fee-chip,.method-chip,.object-chip,.domain-chip,
+.firmware-badge,.model-badge,.campaign-badge,.audit-badge{
+  background:linear-gradient(145deg,#24292c,#15181a) !important;
+  border-color:rgba(255,255,255,.095) !important;
+  color:#aeb7bc !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+/* Tables */
+.table-wrap{scrollbar-color:#42494e transparent}
+.data-table th{
+  color:#929ca2 !important;
+  background:linear-gradient(180deg,#1b1f21,#15181a) !important;
+  border-bottom-color:rgba(255,255,255,.085) !important;
+}
+.data-table td{border-bottom-color:rgba(255,255,255,.07) !important}
+.data-table tbody tr:hover{background:rgba(255,255,255,.032) !important}
+:is(
+  .company-toolbar,.market-toolbar,.tariff-toolbar,.tax-toolbar,.payment-toolbar,.partner-toolbar,
+  .roaming-toolbar,.integration-toolbar,.firmware-toolbar,.security-toolbar,.ai-toolbar,.energy-toolbar,
+  .reports-toolbar,.audit-toolbar,.access-toolbar
+){
+  background:linear-gradient(180deg,rgba(255,255,255,.022),rgba(255,255,255,.006)) !important;
+  border-color:rgba(255,255,255,.085) !important;
+}
+
+/* Tabs / selected states */
+.access-tabs,.market-tabs{
+  background:linear-gradient(145deg,#1d2123,#111315) !important;
+  border-color:rgba(255,255,255,.10) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.access-tab,.market-tab{
+  color:#9ba5ab !important;
+  transition:background .16s ease,color .16s ease,border-color .16s ease;
+}
+.access-tab:hover,.market-tab:hover{
+  background:linear-gradient(145deg,#292e32,#171a1c) !important;
+  color:#eef2f4 !important;
+}
+.access-tab.is-active,.market-tab.is-active{
+  background:linear-gradient(145deg,rgba(221,226,229,.19),rgba(115,126,133,.08)) !important;
+  color:#f4f7f8 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+.access-tab span,.market-tab span{
+  background:linear-gradient(145deg,#3a4044,#202529) !important;
+  color:#e1e6e9 !important;
+}
+
+/* Compact metallic icons */
+:is(
+  .health-row__icon,.attention-entry__icon,.activity-entry__icon,.security-card__icon,.quick-link__icon,
+  .company-logo,.scope-flag,.setup-item__icon,.company-profile__logo,.country-badge,.currency-symbol,
+  .readiness-item__icon,.inheritance-row__icon,.user-avatar,.role-icon,.permission-mark,.request-card__icon,
+  .access-profile__avatar,.tariff-name__icon,.tariff-market__code,.tariff-profile__badge,.tax-profile__icon,
+  .tax-component-count,.tax-readiness-item__icon,.tax-profile__badge,.provider-main__icon,.method-row__icon,
+  .routing-market__code,.payment-profile__icon,.partner-main__icon,.sharing-row__icon,
+  .settlement-readiness-row__icon,.flow-step__icon,.partner-profile__icon,.roaming-main__icon,
+  .roaming-readiness-row__icon,.coverage-row__icon,.dispute-card__icon,.roaming-profile__icon,
+  .integration-system__icon,.readiness-row__icon,.job-row__icon,.event-row__icon,.integration-detail-head__icon,
+  .certificate-badge,.blocked-badge,.security-event__icon,.control-card__icon,.ai-model-badge,.forecast-icon,
+  .rule-name__icon,.approval-icon,.boundary-icon,.energy-readiness__icon,.der-icon,.priority-icon,.dr-icon,
+  .firmware-badge,.model-badge,.event-badge,.campaign-badge,.coverage-item__icon,.report-main__icon,
+  .settings-section__icon,.inheritance-flow__icon,.boundary-stack__icon,.change-rules__icon,.review-item__icon,
+  .access-denied-panel__icon
+){
+  background:linear-gradient(145deg,#292e31,#171a1c) !important;
+  border-color:rgba(255,255,255,.09) !important;
+  color:#dfe5e8 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055);
+}
+
+/* Drawers / popup surfaces */
+.ui-drawer{
+  background:linear-gradient(145deg,#252a2d,#121416 64%,#1b1f21) !important;
+  border-left-color:rgba(255,255,255,.12) !important;
+  box-shadow:-28px 0 80px rgba(0,0,0,.48),inset 1px 0 0 rgba(255,255,255,.05) !important;
+  height:100vh;
+  height:100dvh;
+  max-height:100dvh;
+  overflow:hidden;
+}
+.ui-drawer__body{
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+}
+.ui-drawer__footer{background:rgba(15,17,18,.94) !important}
+.ui-drawer-backdrop{
+  background:rgba(3,4,5,.66) !important;
+  backdrop-filter:blur(7px);
+}
+.ui-detail-grid>div{background:linear-gradient(145deg,#202427,#131618) !important}
+.ui-toast{
+  background:linear-gradient(145deg,#30363a,#171a1c) !important;
+  border-color:rgba(255,255,255,.13) !important;
+  box-shadow:0 18px 60px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+/* Defensive contract for any future admin drawer that adds direct-child tabs.
+   Existing drawers remain the original 3-row layout. */
+.ui-drawer:has(> .ui-tabs){
+  grid-template-rows:auto 55px minmax(0,1fr) auto !important;
+}
+.ui-drawer:has(> .ui-tabs) > .ui-tabs{
+  box-sizing:border-box;
+  width:100%;
+  height:55px;
+  min-height:55px;
+  max-height:55px;
+  margin:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  flex-wrap:nowrap;
+}
+
+/* Tracks / meters / progress */
+:is(
+  .confidence-bar,.weight-bar__track,.allocation-track,.rollout-progress,.model-coverage__bar,
+  .coverage-meter,.distribution-bar
+){
+  background:linear-gradient(180deg,#30363a,#1b1f22) !important;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.035);
+}
+:is(.confidence-bar span,.weight-bar__track span,.allocation-track span,.model-coverage__bar span,.coverage-meter i){
+  box-shadow:0 0 18px rgba(69,212,139,.14);
+}
+
+/* Semantic states — preserve administrative meaning. */
+:is(
+  .status-online,.status-active,.status-connected,.status-healthy,.status-approved,.status-complete,
+  .status-live,.status-valid,.status-paid,.status-resolved,.status-success,.status-matched,.status-ready,
+  .status-reconciled,.status-accepted,.status-completed
+){
+  background:rgba(69,212,139,.12) !important;
+  color:#65df9d !important;
+}
+:is(
+  .status-info,.status-syncing,.status-scheduled,.status-monitoring,.status-sent
+){
+  background:rgba(114,167,255,.12) !important;
+  color:#83b2ff !important;
+}
+:is(
+  .status-warning,.status-expiring,.status-review,.status-pending,.status-setup,.status-open,.status-incomplete
+){
+  background:rgba(245,185,66,.12) !important;
+  color:#f5c35d !important;
+}
+:is(
+  .status-error,.status-failed,.status-expired,.status-critical,.status-blocked,.status-suspended,
+  .status-revoked,.status-denied
+){
+  background:rgba(255,95,87,.12) !important;
+  color:#ff837c !important;
+}
+:is(.status-disabled,.status-draft,.status-template,.status-not-configured,.status-archived){
+  background:rgba(160,168,173,.11) !important;
+  color:#aeb6bb !important;
+}
+
+/* Preserve semantic special-state surfaces rather than metallizing them away. */
+.kpi-card--danger,.danger-zone{
+  background:linear-gradient(145deg,rgba(54,29,29,.74),rgba(24,20,20,.92)) !important;
+  border-color:rgba(255,95,87,.20) !important;
+}
+.kpi-card--warning,.review-item--warning{
+  background:linear-gradient(145deg,rgba(62,49,27,.60),rgba(26,23,18,.92)) !important;
+  border-color:rgba(245,185,66,.19) !important;
+}
+.ui-callout--warning,.scope-callout{
+  background:rgba(245,185,66,.065) !important;
+  border-color:rgba(245,185,66,.22) !important;
+}
+.ui-callout--danger{
+  background:rgba(255,95,87,.075) !important;
+  border-color:rgba(255,95,87,.24) !important;
+}
+.ui-callout--info{
+  background:rgba(114,167,255,.065) !important;
+  border-color:rgba(114,167,255,.22) !important;
+}
+
+/* Small semantic marks retain their functional colors. */
+.signed-mark,.component-state--yes .component-state__mark,.boolean-state--yes .boolean-state__mark,
+.permission-item.is-granted .permission-mark,.exchange-mini__item.is-on,.exchange-state.is-on{
+  background:rgba(69,212,139,.12) !important;
+  color:#65df9d !important;
+}
+.unsigned-mark,.two-factor--off .two-factor__dot{
+  background:rgba(245,185,66,.12) !important;
+  color:#f5c35d !important;
+}
+.two-factor--on .two-factor__dot{
+  background:rgba(69,212,139,.12) !important;
+  color:#65df9d !important;
+}
+
+/* Access-control and disabled UI should remain clearly distinct. */
+.nav-link.is-access-locked{opacity:.42}
+.nav-link.is-access-locked:hover{background:transparent !important;border-color:transparent !important}
+.is-permission-disabled{
+  opacity:.48 !important;
+  cursor:not-allowed !important;
+  filter:saturate(.35);
+}
+
+/* Keep the existing sidebar scroll contract used by common.js.
+   The sidebar itself remains the scroll container so sessionStorage restore works. */
+@media(min-width:821px){
+  .sidebar{
+    height:100vh !important;
+    max-height:100vh !important;
+  }
+}
+@media(max-width:820px){
+  .sidebar{
+    background:linear-gradient(180deg,#24292c 0%,#111315 48%,#090a0b 100%) !important;
+    box-shadow:24px 0 70px rgba(0,0,0,.55),inset -1px 0 0 rgba(255,255,255,.05) !important;
+  }
+  .mobile-overlay{
+    background:rgba(3,4,5,.7) !important;
+    backdrop-filter:blur(5px);
+  }
+}
