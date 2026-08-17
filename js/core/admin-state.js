@@ -142,6 +142,7 @@
       {id:'INT-ROAM',type:'Roaming',name:'OCPI Partner Hub',status:'connected',detail:'Locations, tariffs, sessions and settlements',lastSync:'10:39',latency:'51 sec',icon:'⇄'},
       {id:'INT-CERT',type:'Security',name:'Platform Certificates',status:'warning',detail:'2 certificates expire within 30 days',lastSync:'10:30',latency:'Action needed',icon:'◇'},
       {id:'INT-FW',type:'Firmware',name:'Firmware Campaign Service',status:'scheduled',detail:'Campaign FW-2026.08 starts tonight',lastSync:'10:25',latency:'23 chargers',icon:'↻'},
+      {id:'INT-ENERGY',type:'Energy',name:'Energy Policy Engine',status:'warning',detail:'5 active site policies · 4 demand-response capable sites',lastSync:'10:50',latency:'170 kW safety headroom',icon:'⚡'},
       {id:'INT-AI',type:'AI',name:'AI & Automation',status:'connected',detail:'4 active models · 2 approvals waiting',lastSync:'10:48',latency:'96% forecast health',icon:'✦'}
     ],
     enterpriseIntegrations:[
@@ -251,6 +252,28 @@
     ],
     firmwarePolicies:{defaultWindow:'23:00–04:00',stagedRollout:true,firstCohortPercent:10,healthCheckMinutes:15,maxParallelUpdates:5,requireIdleCharger:true,requireSignedFirmware:true,requireApproval:true,autoRollback:true,retryCount:2,pauseOnFailurePercent:10,auditRequired:true},
 
+
+    energy:{managedSites:6,totalCapacityKw:2130,safetyHeadroomKw:170,activePolicies:5,demandResponseSites:4,setupIssues:1},
+    energySites:[
+      {id:'ENG-SITE-001',site:'Yerevan Mall EV Station',companyId:'CMP-001',countryCode:'AM',capacityKw:500,buildingReserveKw:90,safetyHeadroomKw:40,evBudgetKw:370,strategy:'Departure priority',peakLimitKw:430,solar:true,solarPeakKw:120,siteBattery:true,batteryCapacityKwh:500,batteryMaxDischargeKw:150,demandResponse:true,dynamicCost:true,status:'active',override:'Site policy',lastUpdated:'2026-08-17 10:32'},
+      {id:'ENG-SITE-002',site:'Republic Square Charge Hub',companyId:'CMP-001',countryCode:'AM',capacityKw:420,buildingReserveKw:60,safetyHeadroomKw:35,evBudgetKw:325,strategy:'Balanced fairness',peakLimitKw:385,solar:false,solarPeakKw:0,siteBattery:false,batteryCapacityKwh:0,batteryMaxDischargeKw:0,demandResponse:true,dynamicCost:true,status:'active',override:'Market default',lastUpdated:'2026-08-17 09:48'},
+      {id:'ENG-SITE-003',site:'Dalma Garden Station',companyId:'CMP-001',countryCode:'AM',capacityKw:360,buildingReserveKw:80,safetyHeadroomKw:30,evBudgetKw:250,strategy:'Cost optimized',peakLimitKw:320,solar:true,solarPeakKw:80,siteBattery:true,batteryCapacityKwh:240,batteryMaxDischargeKw:90,demandResponse:true,dynamicCost:true,status:'active',override:'Site policy',lastUpdated:'2026-08-17 09:12'},
+      {id:'ENG-SITE-004',site:'Ararat Fleet Depot',companyId:'CMP-002',countryCode:'AM',capacityKw:480,buildingReserveKw:75,safetyHeadroomKw:35,evBudgetKw:370,strategy:'Fleet departure priority',peakLimitKw:440,solar:true,solarPeakKw:160,siteBattery:true,batteryCapacityKwh:620,batteryMaxDischargeKw:180,demandResponse:true,dynamicCost:true,status:'active',override:'Company policy',lastUpdated:'2026-08-17 08:56'},
+      {id:'ENG-SITE-005',site:'Sevan Destination Hub',companyId:'CMP-003',countryCode:'AM',capacityKw:220,buildingReserveKw:40,safetyHeadroomKw:20,evBudgetKw:160,strategy:'Balanced fairness',peakLimitKw:200,solar:true,solarPeakKw:55,siteBattery:false,batteryCapacityKwh:0,batteryMaxDischargeKw:0,demandResponse:false,dynamicCost:false,status:'active',override:'Market default',lastUpdated:'2026-08-16 17:31'},
+      {id:'ENG-SITE-006',site:'North Route Tbilisi Hub',companyId:'CMP-004',countryCode:'GE',capacityKw:150,buildingReserveKw:35,safetyHeadroomKw:10,evBudgetKw:105,strategy:'Not configured',peakLimitKw:140,solar:false,solarPeakKw:0,siteBattery:false,batteryCapacityKwh:0,batteryMaxDischargeKw:0,demandResponse:false,dynamicCost:false,status:'setup',override:'Setup required',lastUpdated:'2026-08-17 09:56'}
+    ],
+    energyPriorityRules:[
+      {id:'EPR-001',name:'Departure urgency',signal:'Minutes to scheduled departure',weight:35,appliesTo:'Fleet vehicles',status:'active',detail:'Vehicles departing sooner receive additional charging priority.'},
+      {id:'EPR-002',name:'Battery deficit',signal:'Target SOC minus current SOC',weight:25,appliesTo:'All managed vehicles',status:'active',detail:'Vehicles with the largest battery deficit receive proportionally more allocation.'},
+      {id:'EPR-003',name:'Fleet service priority',signal:'Fleet / route priority',weight:20,appliesTo:'Corporate fleet',status:'active',detail:'Operationally critical routes can receive a controlled priority boost.'},
+      {id:'EPR-004',name:'Electricity cost signal',signal:'Current / forecast energy price',weight:10,appliesTo:'Flexible sessions',status:'active',detail:'Flexible charging can shift away from expensive grid periods.'},
+      {id:'EPR-005',name:'Renewable availability',signal:'Solar + site battery availability',weight:10,appliesTo:'DER-enabled sites',status:'active',detail:'Charging can increase when local renewable or stored energy is available.'}
+    ],
+    demandResponsePrograms:[
+      {id:'DR-001',name:'Armenia Peak Reduction',scope:'Managed Armenia sites',trigger:'Utility curtailment request',response:'Reduce EV budget while preserving safety and emergency reservations',maxReductionPercent:25,minimumNoticeMinutes:10,status:'active',lastEvent:'No active event'},
+      {id:'DR-002',name:'Georgia Utility Response',scope:'North Route · Georgia',trigger:'Utility curtailment request',response:'Not configured',maxReductionPercent:0,minimumNoticeMinutes:0,status:'setup',lastEvent:'Not configured'}
+    ],
+    energyPolicies:{defaultStrategy:'Balanced fairness',safetyHeadroomPercent:10,minimumSiteReserveKw:20,peakProtection:true,buildingLoadCoordination:true,solarOptimization:true,siteBatteryOptimization:true,dynamicCostOptimization:true,demandResponse:true,phaseBalancing:true,departurePriority:true,allowSiteOverrides:true,requireAudit:true,simulationMode:true},
     ai:{activeModels:4,automationRules:6,openApprovals:2,forecastHealth:96,lastEvaluation:'10:48'},
     aiModels:[
       {id:'AI-DMD-01',name:'Charging Demand Forecast',capability:'Demand forecasting',version:'1.6',scope:'Armenia · Network',owner:'Energy Analytics',status:'active',mode:'Advisory',confidence:94,metricLabel:'MAPE',metricValue:'8.7%',lastEvaluated:'2026-08-17 10:42',lastRun:'2026-08-17 10:45',dataWindow:'90 days',outputs:'Hourly site demand · 24h / 7d horizon',notes:'Prototype configuration representing demand prediction described in the product documentation. No real model inference runs in this UI.'},
@@ -330,6 +353,8 @@
   }
   let state;
   try{state=merge(seed,JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'));}catch(e){state=JSON.parse(JSON.stringify(seed));}
+  if(!Array.isArray(state.integrations)) state.integrations=JSON.parse(JSON.stringify(seed.integrations));
+  seed.integrations.forEach(item=>{if(!state.integrations.some(x=>x.id===item.id))state.integrations.push(JSON.parse(JSON.stringify(item)));});
   const countrySeedByCode=Object.fromEntries(seed.countries.map(c=>[c.code,c]));
   state.countries=(Array.isArray(state.countries)?state.countries:[]).map(country=>({
     ...(countrySeedByCode[country.code]||{locale:'en-US',language:'English',invoiceProfile:'Not configured',legalTerms:'Not configured',paymentRegion:'Not configured',marketStatus:'setup',companies:0,sites:0,lastUpdated:'2026-08-17 11:19'}),
@@ -467,6 +492,18 @@
   state.ai.forecastHealth=activeConfidence.length?Math.round(activeConfidence.reduce((a,b)=>a+b,0)/activeConfidence.length):0;
   const aiHealth=(state.integrations||[]).find(x=>x.id==='INT-AI');
   if(aiHealth){aiHealth.status=state.ai.openApprovals?'warning':'connected';aiHealth.detail=`${state.ai.activeModels} active models · ${state.ai.openApprovals} approval${state.ai.openApprovals===1?'':'s'} waiting`;aiHealth.latency=`${state.ai.forecastHealth}% forecast health`;}
+
+  const energySiteSeedById=Object.fromEntries(seed.energySites.map(item=>[item.id,item]));
+  state.energySites=(Array.isArray(state.energySites)?state.energySites:seed.energySites).map((item,index)=>({id:item.id||`ENG-SITE-${String(index+1).padStart(3,'0')}`,site:'Charging site',companyId:'CMP-001',countryCode:'AM',capacityKw:0,buildingReserveKw:0,safetyHeadroomKw:0,evBudgetKw:0,strategy:'Balanced fairness',peakLimitKw:0,solar:false,solarPeakKw:0,siteBattery:false,batteryCapacityKwh:0,batteryMaxDischargeKw:0,demandResponse:false,dynamicCost:false,status:'setup',override:'Market default',lastUpdated:'Never',...(energySiteSeedById[item.id]||{}),...item}));
+  seed.energySites.forEach(item=>{if(!state.energySites.some(x=>x.id===item.id))state.energySites.push(JSON.parse(JSON.stringify(item)));});
+  const energyRuleSeedById=Object.fromEntries(seed.energyPriorityRules.map(item=>[item.id,item]));
+  state.energyPriorityRules=(Array.isArray(state.energyPriorityRules)?state.energyPriorityRules:seed.energyPriorityRules).map((item,index)=>({id:item.id||`EPR-${String(index+1).padStart(3,'0')}`,name:'Priority rule',signal:'Not configured',weight:0,appliesTo:'All managed vehicles',status:'draft',detail:'',...(energyRuleSeedById[item.id]||{}),...item}));
+  seed.energyPriorityRules.forEach(item=>{if(!state.energyPriorityRules.some(x=>x.id===item.id))state.energyPriorityRules.push(JSON.parse(JSON.stringify(item)));});
+  const drSeedById=Object.fromEntries(seed.demandResponsePrograms.map(item=>[item.id,item]));
+  state.demandResponsePrograms=(Array.isArray(state.demandResponsePrograms)?state.demandResponsePrograms:seed.demandResponsePrograms).map((item,index)=>({id:item.id||`DR-${String(index+1).padStart(3,'0')}`,name:'Demand response program',scope:'Not configured',trigger:'Utility request',response:'Not configured',maxReductionPercent:0,minimumNoticeMinutes:0,status:'setup',lastEvent:'Never',...(drSeedById[item.id]||{}),...item}));
+  seed.demandResponsePrograms.forEach(item=>{if(!state.demandResponsePrograms.some(x=>x.id===item.id))state.demandResponsePrograms.push(JSON.parse(JSON.stringify(item)));});
+  state.energyPolicies={...seed.energyPolicies,...(state.energyPolicies||{})};
+  state.energy={...seed.energy,...(state.energy||{})};
   const reportSeedById=Object.fromEntries(seed.reportDefinitions.map(item=>[item.id,item]));
   state.reportDefinitions=(Array.isArray(state.reportDefinitions)?state.reportDefinitions:seed.reportDefinitions).map((item,index)=>({id:item.id||`RPT-${String(index+1).padStart(3,'0')}`,name:'Administrative report',category:'Governance',scope:'Platform',owner:'Platform Administration',schedule:'Manual',format:'CSV',status:'draft',lastRun:'Never',nextRun:'Not scheduled',dataDomains:[],description:'',...(reportSeedById[item.id]||{}),...item,dataDomains:Array.isArray(item.dataDomains)?item.dataDomains:[]}));
   seed.reportDefinitions.forEach(item=>{if(!state.reportDefinitions.some(x=>x.id===item.id))state.reportDefinitions.push(JSON.parse(JSON.stringify(item)));});
@@ -494,6 +531,7 @@
     if(text.includes('roaming')) return 'Roaming';
     if(text.includes('certificate')||text.includes('rfid')||text.includes('security')||item.icon==='◇') return 'Security & Certificates';
     if(text.includes('firmware')||item.icon==='↻') return 'Firmware';
+    if(text.includes('energy')||text.includes('load optimization')||item.icon==='⚡') return 'Energy & Load Optimization';
     if(text.includes('ai')||text.includes('automation')||text.includes('anomaly')||item.icon==='✦'||item.icon==='AUT') return 'AI & Automation';
     if(text.includes('platform setting')||text.includes('feature flag')||text.includes('global default')||item.icon==='⚙') return 'Platform Settings';
     if(text.includes('tax')) return 'Taxes';
@@ -562,6 +600,19 @@
       state.ai.forecastHealth=confidences.length?Math.round(confidences.reduce((a,b)=>a+b,0)/confidences.length):0;
       const aiHealth=(state.integrations||[]).find(x=>x.id==='INT-AI');
       if(aiHealth){aiHealth.status=state.ai.openApprovals?'warning':'connected';aiHealth.detail=`${state.ai.activeModels} active models · ${state.ai.openApprovals} approval${state.ai.openApprovals===1?'':'s'} waiting`;aiHealth.latency=`${state.ai.forecastHealth}% forecast health`;}
+    }
+
+    if(Array.isArray(state.energySites)){
+      const activeEnergySites=state.energySites.filter(x=>x.status==='active');
+      state.energy={...seed.energy,...(state.energy||{})};
+      state.energy.managedSites=state.energySites.length;
+      state.energy.totalCapacityKw=state.energySites.reduce((sum,x)=>sum+(Number(x.capacityKw)||0),0);
+      state.energy.safetyHeadroomKw=state.energySites.reduce((sum,x)=>sum+(Number(x.safetyHeadroomKw)||0),0);
+      state.energy.activePolicies=activeEnergySites.length;
+      state.energy.demandResponseSites=activeEnergySites.filter(x=>x.demandResponse).length;
+      state.energy.setupIssues=state.energySites.filter(x=>x.status!=='active'||x.strategy==='Not configured').length;
+      const energyHealth=(state.integrations||[]).find(x=>x.id==='INT-ENERGY');
+      if(energyHealth){energyHealth.status=state.energy.setupIssues?'warning':'connected';energyHealth.detail=`${state.energy.activePolicies} active site policies · ${state.energy.demandResponseSites} demand-response capable sites`;energyHealth.latency=`${state.energy.safetyHeadroomKw} kW safety headroom`;}
     }
     if(state.platformSettings?.retention){
       const auditDays=Math.max(30,Number(state.platformSettings.retention.auditDays)||365);
