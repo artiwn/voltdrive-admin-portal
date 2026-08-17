@@ -1,6 +1,10 @@
 {
-  "name":"voltdrive-admin-portal",
-  "version":"0.1.0",
-  "private":true,
-  "scripts":{"check":"node scripts/check.js"}
+  "name": "voltdrive-admin-portal",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "check": "node scripts/check.js",
+    "smoke": "node scripts/smoke-state.js",
+    "verify": "npm run check && npm run smoke"
+  }
 }
