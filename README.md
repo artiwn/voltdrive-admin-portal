@@ -1,15 +1,15 @@
-# VoltDrive Admin Portal — Stage 15
+# VoltDrive Admin Portal — Stage 14
 
-Desktop administration prototype for the VoltDrive EV Charging Platform.
+Dark desktop administration prototype for the VoltDrive EV Charging Platform.
 
-## Completed modules
+## Implemented modules
 
 - Admin Dashboard
 - Companies
 - Users & Access
 - Countries & Currencies
-- Tariffs & Pricing
 - Taxes
+- Tariffs & Pricing
 - Payments
 - Partners & Settlements
 - Roaming
@@ -18,49 +18,34 @@ Desktop administration prototype for the VoltDrive EV Charging Platform.
 - Security & Certificates
 - AI & Automation
 - Reports & Audit
-- Platform Settings
 
-## Stage 15 — Platform Settings
+## Stage 14 — Reports & Audit
 
-Platform Settings provides global inherited defaults without duplicating controls that belong to dedicated modules.
+The governance module adds advanced administrative reporting and a read-only audit trail:
 
-Included configuration groups:
+- reusable report catalog with category, scope, owner, schedule, format and data domains;
+- reporting coverage for charger reliability, sessions, energy, revenue/profitability, electricity cost, parking/reservations, maintenance, fleet/renewable energy, security and integrations;
+- manual prototype report generation and retained report-run history;
+- report-definition create/edit flows and CSV metadata snapshots;
+- administrative audit trail with module, actor, source, severity and time-window filters;
+- governed audit CSV export with mandatory reason when configured;
+- audit distribution by module;
+- retention, immutable-audit, PII, scheduled-delivery and export policies;
+- new report/audit actions are themselves recorded in the administrative audit history.
 
-- General & Localization
-- Charging & Reservation defaults
-- Communications
-- Numbering & Identifiers
-- Data Retention
-- Feature Availability
-- Support, Legal & Maintenance
-- Configuration Readiness
-- Explicit inheritance order
-- Configuration boundaries
-- Administrative audit for settings changes
-- CSV export
+The prototype models report configuration and governance locally. It does not query a real analytics warehouse, billing backend, charger telemetry service or compliance archive.
 
-Global settings are persisted in the existing `voltdrive_admin_v1` localStorage state.
+## Prototype storage
 
-Administrative audit retention is synchronized between Platform Settings, Security & Certificates, and Reports & Audit.
+All administrative state is stored locally under `voltdrive_admin_v1`.
 
-## AI & Automation navigation fix
+## Validation
 
-The AI & Automation module already existed from Stage 13. Stage 15 fixes older sidebars that still displayed AI & Automation as a planned module. It is now a real navigation link across every implemented Admin Portal page.
-
-## UI rules preserved
-
-- Dark VoltDrive desktop design system.
-- Original `VoltDrive / Admin Portal` sidebar brand retained.
-- Compact checkboxes remain 16×16 px inside settings forms.
-- Compact icons, pills and badges use explicit flex centering.
-- No global style rewrite was introduced for existing modules.
-
-## Prototype note
-
-This remains a front-end prototype. Values are stored in `localStorage`; no production backend, real credentials, private keys, payment secrets or external ERP/network connections are included.
-
-## Check
+Run:
 
 ```bash
 npm run check
 ```
+
+## Stage 16 — Energy & Load Optimization
+Adds administrative energy policy configuration: site capacity and safety headroom, load-balancing strategy, vehicle priority signals, solar/site-battery optimization, demand response, peak protection, site overrides and a prototype-only allocation simulator. Operational charger control remains outside the Admin Portal.
