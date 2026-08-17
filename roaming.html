@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <title>Roaming · VoltDrive Admin</title>
+  <link rel="stylesheet" href="css/core/variables.css">
+  <link rel="stylesheet" href="css/core/reset.css">
+  <link rel="stylesheet" href="css/core/typography.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="stylesheet" href="css/components/admin-ui.css">
+  <link rel="stylesheet" href="css/layout/app-layout.css">
+  <link rel="stylesheet" href="css/layout/sidebar.css">
+  <link rel="stylesheet" href="css/layout/header.css">
+  <link rel="stylesheet" href="css/pages/roaming.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand"><strong>VoltDrive</strong><span>Admin Portal</span></div>
+    <nav class="sidebar__nav">
+      <div class="sidebar__group"><span class="sidebar__group-title">Overview</span><a class="nav-link" href="dashboard.html"><span class="nav-link__icon">⌂</span><span class="nav-link__label">Admin Dashboard</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Organization</span><a class="nav-link" href="companies.html"><span class="nav-link__icon">▣</span><span class="nav-link__label">Companies</span></a><a class="nav-link" href="users-access.html"><span class="nav-link__icon">♙</span><span class="nav-link__label">Users & Access</span><span class="nav-link__badge" id="sidebar-access-badge">3</span></a><a class="nav-link" href="countries-currencies.html"><span class="nav-link__icon">◎</span><span class="nav-link__label">Countries & Currencies</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Commercial</span><a class="nav-link" href="tariffs.html"><span class="nav-link__icon">¤</span><span class="nav-link__label">Tariffs & Pricing</span></a><a class="nav-link" href="taxes.html"><span class="nav-link__icon">%</span><span class="nav-link__label">Taxes</span></a><a class="nav-link" href="payments.html"><span class="nav-link__icon">▤</span><span class="nav-link__label">Payments</span></a><a class="nav-link" href="partners-settlements.html"><span class="nav-link__icon">⇆</span><span class="nav-link__label">Partners & Settlements</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Platform</span><a class="nav-link is-active" href="roaming.html"><span class="nav-link__icon">↔</span><span class="nav-link__label">Roaming</span></a><a class="nav-link" href="integrations.html"><span class="nav-link__icon">⇄</span><span class="nav-link__label">ERP & Integrations</span></a><a class="nav-link" href="firmware.html"><span class="nav-link__icon">↻</span><span class="nav-link__label">Firmware</span></a><a class="nav-link" href="security.html"><span class="nav-link__icon">◇</span><span class="nav-link__label">Security & Certificates</span><span class="nav-link__badge">2</span></a><a class="nav-link" href="ai-automation.html"><span class="nav-link__icon">✦</span><span class="nav-link__label">AI & Automation</span><span class="nav-link__badge">2</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Governance</span><a class="nav-link" href="reports-audit.html"><span class="nav-link__icon">▥</span><span class="nav-link__label">Reports & Audit</span></a><a class="nav-link" href="platform-settings.html"><span class="nav-link__icon">⚙</span><span class="nav-link__label">Platform Settings</span></a></div>
+    </nav>
+    <div class="sidebar__footer"><div class="sidebar-user"><span class="sidebar-user__avatar">AG</span><div><strong>Ani Grigoryan</strong><span>Platform Administrator</span></div></div></div>
+  </aside>
+  <div class="mobile-overlay"></div>
+  <main class="app-main">
+    <header class="topbar"><div class="topbar__left"><button class="icon-button menu-button" id="menu-button" aria-label="Open menu">☰</button><div class="topbar__title"><h1>Roaming</h1><p>Partner networks, agreements, data exchange, roaming settlement and dispute configuration.</p></div></div><div class="topbar__actions"><span class="platform-chip">Inter-network operations</span><button class="icon-button" id="refresh-button" title="Refresh" aria-label="Refresh">↻</button></div></header>
+    <div class="page-content">
+      <section class="roaming-hero"><div><h2>Roaming Administration</h2><p>Configure how VoltDrive exchanges locations, tariffs, availability, authorizations and charging-session records with partner networks. Commercial settlement and disputes remain fully auditable.</p></div><div class="roaming-hero__actions"><button class="button button--secondary" id="export-roaming">Export CSV</button><button class="button button--secondary" id="new-dispute">+ Dispute</button><button class="button button--primary" id="add-roaming-partner">+ Roaming partner</button></div></section>
+
+      <section class="roaming-kpis">
+        <article class="kpi-card"><span>Roaming partners</span><strong id="roaming-kpi-partners">—</strong><small>External CPO/eMSP connections</small></article>
+        <article class="kpi-card"><span>Connected networks</span><strong id="roaming-kpi-connected">—</strong><small>Production connections online</small></article>
+        <article class="kpi-card"><span>Shared locations</span><strong id="roaming-kpi-locations">—</strong><small>Partner locations currently exchanged</small></article>
+        <article class="kpi-card"><span>Sessions MTD</span><strong id="roaming-kpi-sessions">—</strong><small>Roaming charging sessions this month</small></article>
+        <article class="kpi-card"><span>Pending settlement</span><strong id="roaming-kpi-settlement">—</strong><small>Open net payable/receivable records</small></article>
+        <article class="kpi-card kpi-card--warning"><span>Open disputes</span><strong id="roaming-kpi-disputes">—</strong><small>Session or tariff records under review</small></article>
+      </section>
+
+      <section class="roaming-grid">
+        <section class="panel roaming-registry-panel">
+          <div class="panel__header"><div><h2>Roaming Partner Registry</h2><p>Connection, agreement, protocol and commercial terms for each external network.</p></div><span class="panel-chip" id="roaming-partner-count">— partners</span></div>
+          <div class="roaming-toolbar">
+            <label class="form-field roaming-search"><span>Search</span><input id="roaming-search" type="search" placeholder="Network, agreement, country or business code"></label>
+            <label class="form-field"><span>Connection</span><select id="roaming-connection"><option value="all">All connections</option><option value="connected">Connected</option><option value="setup">Setup</option><option value="disabled">Disabled</option></select></label>
+            <label class="form-field"><span>Agreement</span><select id="roaming-agreement"><option value="all">All agreements</option><option value="active">Active</option><option value="draft">Draft</option><option value="expired">Expired</option></select></label>
+            <button class="action-button roaming-reset" id="reset-roaming-filters">Reset</button>
+          </div>
+          <div class="table-wrap"><table class="data-table roaming-table"><thead><tr><th>Network</th><th>Protocol / role</th><th>Agreement</th><th>Data exchange</th><th>Sessions MTD</th><th>Settlement</th><th>Last sync</th><th>Connection</th></tr></thead><tbody id="roaming-partner-body"></tbody></table><div class="table-empty" id="roaming-empty" hidden>No roaming partners match the current filters.</div></div>
+        </section>
+
+        <aside class="roaming-side">
+          <section class="panel"><div class="panel__header"><div><h2>Connection Readiness</h2><p>Items that can block production roaming.</p></div></div><div class="panel__body"><div class="roaming-readiness-list" id="roaming-readiness-list"></div></div></section>
+          <section class="panel"><div class="panel__header"><div><h2>Exchange Coverage</h2><p>Platform-level roaming capabilities.</p></div></div><div class="panel__body"><div class="coverage-list" id="roaming-coverage-list"></div></div></section>
+        </aside>
+      </section>
+
+      <section class="panel roaming-exchange-panel">
+        <div class="panel__header"><div><h2>Partner Data Exchange Matrix</h2><p>Which operational datasets and commands are enabled for each partner network.</p></div></div>
+        <div class="table-wrap"><table class="data-table exchange-table"><thead><tr><th>Partner</th><th>Locations</th><th>Tariffs</th><th>Availability</th><th>Authorization</th><th>Sessions</th><th>CDRs</th><th>Reservations</th><th>Remote start</th></tr></thead><tbody id="roaming-exchange-body"></tbody></table></div>
+      </section>
+
+      <section class="roaming-bottom-grid">
+        <section class="panel"><div class="panel__header"><div><h2>Roaming Settlements</h2><p>Partner commission, FX adjustment and net settlement records.</p></div><span class="panel-chip" id="roaming-settlement-count">— runs</span></div><div class="table-wrap"><table class="data-table roaming-settlement-table"><thead><tr><th>Run</th><th>Partner / period</th><th>Sessions</th><th>Gross</th><th>Commission</th><th>FX</th><th>Net</th><th>Reconciliation</th><th>Settlement</th></tr></thead><tbody id="roaming-settlement-body"></tbody></table></div></section>
+        <section class="panel"><div class="panel__header"><div><h2>Disputes</h2><p>CDR, tariff and session differences requiring partner resolution.</p></div><span class="panel-chip" id="roaming-dispute-count">— disputes</span></div><div class="dispute-list" id="roaming-dispute-list"></div></section>
+      </section>
+
+      <section class="panel roaming-policy-panel"><div class="panel__header"><div><h2>Roaming Policy</h2><p>Platform defaults for authorization, synchronization, settlement and dispute control.</p></div><button class="action-button" id="edit-roaming-policy">Edit policy</button></div><div class="panel__body"><div class="roaming-policy-grid" id="roaming-policy-grid"></div></div></section>
+    </div>
+  </main>
+</div>
+<div class="ui-drawer-backdrop" id="drawer-backdrop"></div><aside class="ui-drawer" id="admin-drawer"><header class="ui-drawer__header"><div><span class="panel-chip">Roaming</span><h2 id="drawer-title">Details</h2><p id="drawer-subtitle"></p></div><button class="icon-button" id="drawer-close" aria-label="Close">×</button></header><div class="ui-drawer__body" id="drawer-body"></div><footer class="ui-drawer__footer" id="drawer-footer"></footer></aside>
+<div class="ui-toast" id="ui-toast"></div>
+<script src="js/core/admin-state.js"></script><script src="js/pages/roaming.js"></script><script src="js/layout/common.js"></script>
+</body></html>

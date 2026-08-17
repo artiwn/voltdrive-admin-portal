@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <title>Partners & Settlements · VoltDrive Admin</title>
+  <link rel="stylesheet" href="css/core/variables.css">
+  <link rel="stylesheet" href="css/core/reset.css">
+  <link rel="stylesheet" href="css/core/typography.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="stylesheet" href="css/components/admin-ui.css">
+  <link rel="stylesheet" href="css/layout/app-layout.css">
+  <link rel="stylesheet" href="css/layout/sidebar.css">
+  <link rel="stylesheet" href="css/layout/header.css">
+  <link rel="stylesheet" href="css/pages/partners-settlements.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand"><strong>VoltDrive</strong><span>Admin Portal</span></div>
+    <nav class="sidebar__nav">
+      <div class="sidebar__group"><span class="sidebar__group-title">Overview</span><a class="nav-link" href="dashboard.html"><span class="nav-link__icon">⌂</span><span class="nav-link__label">Admin Dashboard</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Organization</span><a class="nav-link" href="companies.html"><span class="nav-link__icon">▣</span><span class="nav-link__label">Companies</span></a><a class="nav-link" href="users-access.html"><span class="nav-link__icon">♙</span><span class="nav-link__label">Users & Access</span><span class="nav-link__badge" id="sidebar-access-badge">3</span></a><a class="nav-link" href="countries-currencies.html"><span class="nav-link__icon">◎</span><span class="nav-link__label">Countries & Currencies</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Commercial</span><a class="nav-link" href="tariffs.html"><span class="nav-link__icon">¤</span><span class="nav-link__label">Tariffs & Pricing</span></a><a class="nav-link" href="taxes.html"><span class="nav-link__icon">%</span><span class="nav-link__label">Taxes</span></a><a class="nav-link" href="payments.html"><span class="nav-link__icon">▤</span><span class="nav-link__label">Payments</span></a><a class="nav-link is-active" href="partners-settlements.html"><span class="nav-link__icon">⇆</span><span class="nav-link__label">Partners & Settlements</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Platform</span><a class="nav-link" href="roaming.html"><span class="nav-link__icon">↔</span><span class="nav-link__label">Roaming</span></a><a class="nav-link" href="integrations.html"><span class="nav-link__icon">⇄</span><span class="nav-link__label">ERP & Integrations</span></a><a class="nav-link" href="firmware.html"><span class="nav-link__icon">↻</span><span class="nav-link__label">Firmware</span></a><a class="nav-link" href="security.html"><span class="nav-link__icon">◇</span><span class="nav-link__label">Security & Certificates</span><span class="nav-link__badge">2</span></a><a class="nav-link" href="ai-automation.html"><span class="nav-link__icon">✦</span><span class="nav-link__label">AI & Automation</span><span class="nav-link__badge">2</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Governance</span><a class="nav-link" href="reports-audit.html"><span class="nav-link__icon">▥</span><span class="nav-link__label">Reports & Audit</span></a><a class="nav-link" href="platform-settings.html"><span class="nav-link__icon">⚙</span><span class="nav-link__label">Platform Settings</span></a></div>
+    </nav>
+    <div class="sidebar__footer"><div class="sidebar-user"><span class="sidebar-user__avatar">AG</span><div><strong>Ani Grigoryan</strong><span>Platform Administrator</span></div></div></div>
+  </aside>
+  <div class="mobile-overlay"></div>
+  <main class="app-main">
+    <header class="topbar"><div class="topbar__left"><button class="icon-button menu-button" id="menu-button" aria-label="Open menu">☰</button><div class="topbar__title"><h1>Partners & Settlements</h1><p>Commercial partner contracts, revenue sharing, settlement cycles and financial reconciliation.</p></div></div><div class="topbar__actions"><span class="platform-chip">Commercial governance</span><button class="icon-button" id="refresh-button" title="Refresh" aria-label="Refresh">↻</button></div></header>
+    <div class="page-content">
+      <section class="partner-hero"><div><h2>Partner Settlement Administration</h2><p>Configure property-owner and site-host commercial agreements, calculate revenue shares and control settlement readiness. Roaming partner agreements remain a separate platform module.</p></div><div class="partner-hero__actions"><button class="button button--secondary" id="export-settlements">Export CSV</button><button class="button button--secondary" id="create-settlement">+ Settlement run</button><button class="button button--primary" id="add-partner">+ Add partner</button></div></section>
+
+      <section class="partner-kpis">
+        <article class="kpi-card"><span>Commercial partners</span><strong id="partner-kpi-total">—</strong><small>Property owners and site hosts</small></article>
+        <article class="kpi-card"><span>Active contracts</span><strong id="partner-kpi-active">—</strong><small>Revenue-share or fixed-fee agreements</small></article>
+        <article class="kpi-card"><span>Outstanding payable</span><strong id="partner-kpi-payable">—</strong><small>Across settlement-ready partner balances</small></article>
+        <article class="kpi-card"><span>Settlement runs</span><strong id="partner-kpi-runs">—</strong><small>Draft, scheduled and paid records</small></article>
+        <article class="kpi-card kpi-card--warning"><span>Reconciliation issues</span><strong id="partner-kpi-issues">—</strong><small>Runs or profiles requiring review</small></article>
+      </section>
+
+      <section class="partner-grid">
+        <section class="panel partner-registry-panel">
+          <div class="panel__header"><div><h2>Partner Registry</h2><p>Contract owner, revenue model, linked footprint and settlement terms.</p></div><span class="panel-chip" id="partner-count">— partners</span></div>
+          <div class="partner-toolbar">
+            <label class="form-field partner-search"><span>Search</span><input id="partner-search" type="search" placeholder="Partner, contract, company or scope"></label>
+            <label class="form-field"><span>Company</span><select id="partner-company"><option value="all">All companies</option></select></label>
+            <label class="form-field"><span>Type</span><select id="partner-type"><option value="all">All types</option></select></label>
+            <label class="form-field"><span>Status</span><select id="partner-status"><option value="all">All statuses</option><option value="active">Active</option><option value="setup">Setup</option><option value="suspended">Suspended</option></select></label>
+            <button class="action-button partner-reset" id="reset-partner-filters">Reset</button>
+          </div>
+          <div class="table-wrap"><table class="data-table partner-table"><thead><tr><th>Partner</th><th>Company / scope</th><th>Commercial model</th><th>Settlement</th><th>Outstanding</th><th>Next run</th><th>Contract</th><th>Status</th></tr></thead><tbody id="partner-table-body"></tbody></table><div class="table-empty" id="partner-empty" hidden>No partners match the current filters.</div></div>
+        </section>
+
+        <aside class="partner-side">
+          <section class="panel"><div class="panel__header"><div><h2>Revenue Sharing Models</h2><p>How hosted charging revenue is allocated.</p></div></div><div class="panel__body"><div class="sharing-list" id="sharing-model-list"></div></div></section>
+          <section class="panel"><div class="panel__header"><div><h2>Settlement Readiness</h2><p>Commercial setup and reconciliation checks.</p></div></div><div class="panel__body"><div class="settlement-readiness-list" id="settlement-readiness-list"></div></div></section>
+        </aside>
+      </section>
+
+      <section class="panel settlement-runs-panel">
+        <div class="panel__header"><div><h2>Settlement Runs</h2><p>Period-level payable calculation, reconciliation and payment state.</p></div><span class="panel-chip" id="settlement-run-count">— runs</span></div>
+        <div class="settlement-toolbar"><label class="form-field"><span>Partner</span><select id="run-partner"><option value="all">All partners</option></select></label><label class="form-field"><span>Reconciliation</span><select id="run-reconciliation"><option value="all">All statuses</option><option value="reconciled">Reconciled</option><option value="ready">Ready</option><option value="review">Review</option><option value="blocked">Blocked</option></select></label><label class="form-field"><span>Settlement status</span><select id="run-status"><option value="all">All statuses</option><option value="draft">Draft</option><option value="scheduled">Scheduled</option><option value="paid">Paid</option><option value="blocked">Blocked</option></select></label></div>
+        <div class="table-wrap"><table class="data-table settlement-table"><thead><tr><th>Run</th><th>Partner / period</th><th>Gross revenue</th><th>Tax</th><th>Payment fees</th><th>Adjustments</th><th>Net payable</th><th>Reconciliation</th><th>Settlement</th><th>Due date</th></tr></thead><tbody id="settlement-table-body"></tbody></table><div class="table-empty" id="settlement-empty" hidden>No settlement runs match the selected filters.</div></div>
+      </section>
+
+      <section class="settlement-bottom-grid">
+        <section class="panel"><div class="panel__header"><div><h2>Settlement Policy</h2><p>Default finance controls for partner payouts.</p></div><button class="action-button" id="edit-settlement-policy">Edit</button></div><div class="panel__body"><div class="policy-summary" id="settlement-policy-summary"></div></div></section>
+        <section class="panel"><div class="panel__header"><div><h2>Financial Flow</h2><p>How a customer payment becomes operator revenue and partner payable.</p></div></div><div class="panel__body"><div class="flow-preview" id="financial-flow-preview"></div></div></section>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="ui-drawer-backdrop" id="drawer-backdrop"></div><aside class="ui-drawer" id="admin-drawer"><header class="ui-drawer__header"><div><span class="panel-chip">Partners & Settlements</span><h2 id="drawer-title">Details</h2><p id="drawer-subtitle"></p></div><button class="icon-button" id="drawer-close" aria-label="Close">×</button></header><div class="ui-drawer__body" id="drawer-body"></div><footer class="ui-drawer__footer" id="drawer-footer"></footer></aside>
+<div class="ui-toast" id="ui-toast"></div>
+<script src="js/core/admin-state.js"></script><script src="js/pages/partners-settlements.js"></script><script src="js/layout/common.js"></script>
+</body></html>

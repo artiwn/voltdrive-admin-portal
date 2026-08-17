@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <title>Users & Access · VoltDrive Admin</title>
+  <link rel="stylesheet" href="css/core/variables.css">
+  <link rel="stylesheet" href="css/core/reset.css">
+  <link rel="stylesheet" href="css/core/typography.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="stylesheet" href="css/components/admin-ui.css">
+  <link rel="stylesheet" href="css/layout/app-layout.css">
+  <link rel="stylesheet" href="css/layout/sidebar.css">
+  <link rel="stylesheet" href="css/layout/header.css">
+  <link rel="stylesheet" href="css/pages/users-access.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand"><strong>VoltDrive</strong><span>Admin Portal</span></div>
+    <nav class="sidebar__nav">
+      <div class="sidebar__group"><span class="sidebar__group-title">Overview</span><a class="nav-link" href="dashboard.html"><span class="nav-link__icon">⌂</span><span class="nav-link__label">Admin Dashboard</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Organization</span><a class="nav-link" href="companies.html"><span class="nav-link__icon">▣</span><span class="nav-link__label">Companies</span></a><a class="nav-link is-active" href="users-access.html"><span class="nav-link__icon">♙</span><span class="nav-link__label">Users & Access</span><span class="nav-link__badge" id="sidebar-access-badge">3</span></a><a class="nav-link" href="countries-currencies.html"><span class="nav-link__icon">◎</span><span class="nav-link__label">Countries & Currencies</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Commercial</span><a class="nav-link" href="tariffs.html"><span class="nav-link__icon">¤</span><span class="nav-link__label">Tariffs & Pricing</span></a><a class="nav-link" href="taxes.html"><span class="nav-link__icon">%</span><span class="nav-link__label">Taxes</span></a><a class="nav-link" href="payments.html"><span class="nav-link__icon">▤</span><span class="nav-link__label">Payments</span></a><a class="nav-link" href="partners-settlements.html"><span class="nav-link__icon">⇆</span><span class="nav-link__label">Partners & Settlements</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Platform</span><a class="nav-link" href="roaming.html"><span class="nav-link__icon">↔</span><span class="nav-link__label">Roaming</span></a><a class="nav-link" href="integrations.html"><span class="nav-link__icon">⇄</span><span class="nav-link__label">ERP & Integrations</span></a><a class="nav-link" href="firmware.html"><span class="nav-link__icon">↻</span><span class="nav-link__label">Firmware</span></a><a class="nav-link" href="security.html"><span class="nav-link__icon">◇</span><span class="nav-link__label">Security & Certificates</span><span class="nav-link__badge">2</span></a><a class="nav-link" href="ai-automation.html"><span class="nav-link__icon">✦</span><span class="nav-link__label">AI & Automation</span><span class="nav-link__badge">2</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Governance</span><a class="nav-link" href="reports-audit.html"><span class="nav-link__icon">▥</span><span class="nav-link__label">Reports & Audit</span></a><a class="nav-link" href="platform-settings.html"><span class="nav-link__icon">⚙</span><span class="nav-link__label">Platform Settings</span></a></div>
+    </nav>
+    <div class="sidebar__footer"><div class="sidebar-user"><span class="sidebar-user__avatar">AG</span><div><strong>Ani Grigoryan</strong><span>Platform Administrator</span></div></div></div>
+  </aside>
+  <div class="mobile-overlay"></div>
+  <main class="app-main">
+    <header class="topbar"><div class="topbar__left"><button class="icon-button menu-button" id="menu-button" aria-label="Open menu">☰</button><div class="topbar__title"><h1>Users & Access</h1><p>Identity, roles, permissions, company scope, invitations and access approvals.</p></div></div><div class="topbar__actions"><span class="platform-chip">Role-based access</span><button class="icon-button" id="refresh-button" title="Refresh" aria-label="Refresh">↻</button></div></header>
+    <div class="page-content">
+      <section class="access-hero">
+        <div><h2>Identity & Access Control</h2><p>Define who can access VoltDrive, what actions they can perform and where those permissions apply. High-risk operational permissions stay explicit and scope-aware instead of being hidden behind a generic administrator flag.</p></div>
+        <div class="access-hero__actions"><button class="button button--secondary" id="create-role">+ Create role</button><button class="button button--primary" id="invite-user">+ Invite user</button></div>
+      </section>
+
+      <section class="access-kpis">
+        <article class="kpi-card"><span>Active users</span><strong id="access-kpi-active">—</strong><small>Across all organizations</small></article>
+        <article class="kpi-card"><span>Privileged accounts</span><strong id="access-kpi-privileged">—</strong><small>Elevated access roles</small></article>
+        <article class="kpi-card"><span>2FA coverage</span><strong id="access-kpi-2fa">—</strong><small id="access-kpi-2fa-note">—</small></article>
+        <article class="kpi-card"><span>Pending invitations</span><strong id="access-kpi-invites">—</strong><small>Sent or draft invitations</small></article>
+        <article class="kpi-card kpi-card--warning"><span>Access approvals</span><strong id="access-kpi-approvals">—</strong><small>Role & scope decisions</small></article>
+      </section>
+
+      <section class="access-tabs" role="tablist" aria-label="Users and access sections">
+        <button class="access-tab is-active" data-tab="users" role="tab">Users <span id="tab-users-count">—</span></button>
+        <button class="access-tab" data-tab="roles" role="tab">Roles & Permissions <span id="tab-roles-count">—</span></button>
+        <button class="access-tab" data-tab="requests" role="tab">Access Requests <span id="tab-requests-count">—</span></button>
+        <button class="access-tab" data-tab="invitations" role="tab">Invitations <span id="tab-invitations-count">—</span></button>
+      </section>
+
+      <section class="access-view is-active" data-view="users">
+        <section class="panel access-table-panel">
+          <div class="panel__header"><div><h2>User Directory</h2><p>Employees and partner users with platform access.</p></div><span class="panel-chip" id="user-result-count">— users</span></div>
+          <div class="access-toolbar">
+            <label class="form-field access-search"><span>Search</span><input id="user-search" type="search" placeholder="Name, email, company or scope"></label>
+            <label class="form-field"><span>Company</span><select id="user-company"><option value="all">All companies</option></select></label>
+            <label class="form-field"><span>Role</span><select id="user-role"><option value="all">All roles</option></select></label>
+            <label class="form-field"><span>Status</span><select id="user-status"><option value="all">All statuses</option><option value="active">Active</option><option value="setup">Setup</option><option value="suspended">Suspended</option></select></label>
+            <button class="action-button toolbar-reset" id="reset-user-filters">Reset</button>
+          </div>
+          <div class="table-wrap"><table class="data-table user-table"><thead><tr><th>User</th><th>Company</th><th>Role</th><th>Scope</th><th>2FA</th><th>Last login</th><th>Status</th></tr></thead><tbody id="user-table-body"></tbody></table><div class="table-empty" id="user-empty" hidden>No users match the current filters.</div></div>
+        </section>
+      </section>
+
+      <section class="access-view" data-view="roles">
+        <div class="roles-layout">
+          <section class="panel"><div class="panel__header"><div><h2>Roles</h2><p>System and custom roles with explicit permission sets.</p></div><span class="panel-chip" id="role-result-count">— roles</span></div><div class="role-list" id="role-list"></div></section>
+          <aside class="panel role-inspector"><div class="panel__header"><div><h2>Permission Matrix</h2><p>Select a role to inspect its effective permissions.</p></div></div><div class="panel__body" id="role-inspector"></div></aside>
+        </div>
+      </section>
+
+      <section class="access-view" data-view="requests">
+        <section class="panel"><div class="panel__header"><div><h2>Access Approval Queue</h2><p>Requests for elevated roles or expanded operational scope.</p></div><span class="panel-chip" id="request-review-count">— in review</span></div><div class="request-list" id="request-list"></div></section>
+      </section>
+
+      <section class="access-view" data-view="invitations">
+        <section class="panel"><div class="panel__header"><div><h2>Invitations</h2><p>Pending onboarding invitations and their expiry state.</p></div><span class="panel-chip" id="invitation-open-count">— open</span></div><div class="table-wrap"><table class="data-table invitation-table"><thead><tr><th>Invitee</th><th>Company</th><th>Role</th><th>Scope</th><th>2FA</th><th>Sent</th><th>Expires</th><th>Status</th></tr></thead><tbody id="invitation-table-body"></tbody></table></div></section>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="ui-drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="ui-drawer" id="admin-drawer"><header class="ui-drawer__header"><div><h2 id="drawer-title">Access</h2><p id="drawer-subtitle"></p></div><button class="ui-close" id="drawer-close" aria-label="Close">×</button></header><div class="ui-drawer__body" id="drawer-body"></div><footer class="ui-drawer__footer" id="drawer-footer"></footer></aside>
+<div class="ui-toast" id="ui-toast" role="status" aria-live="polite"></div>
+<script src="js/core/admin-state.js"></script>
+<script src="js/pages/users-access.js"></script>
+<script src="js/layout/common.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <title>Companies · VoltDrive Admin</title>
+  <link rel="stylesheet" href="css/core/variables.css">
+  <link rel="stylesheet" href="css/core/reset.css">
+  <link rel="stylesheet" href="css/core/typography.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="stylesheet" href="css/components/admin-ui.css">
+  <link rel="stylesheet" href="css/layout/app-layout.css">
+  <link rel="stylesheet" href="css/layout/sidebar.css">
+  <link rel="stylesheet" href="css/layout/header.css">
+  <link rel="stylesheet" href="css/pages/companies.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand"><strong>VoltDrive</strong><span>Admin Portal</span></div>
+    <nav class="sidebar__nav">
+      <div class="sidebar__group"><span class="sidebar__group-title">Overview</span><a class="nav-link" href="dashboard.html"><span class="nav-link__icon">⌂</span><span class="nav-link__label">Admin Dashboard</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Organization</span><a class="nav-link is-active" href="companies.html"><span class="nav-link__icon">▣</span><span class="nav-link__label">Companies</span></a><a class="nav-link" href="users-access.html"><span class="nav-link__icon">♙</span><span class="nav-link__label">Users & Access</span><span class="nav-link__badge" id="sidebar-access-badge">3</span></a><a class="nav-link" href="countries-currencies.html"><span class="nav-link__icon">◎</span><span class="nav-link__label">Countries & Currencies</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Commercial</span><a class="nav-link" href="tariffs.html"><span class="nav-link__icon">¤</span><span class="nav-link__label">Tariffs & Pricing</span></a><a class="nav-link" href="taxes.html"><span class="nav-link__icon">%</span><span class="nav-link__label">Taxes</span></a><a class="nav-link" href="payments.html"><span class="nav-link__icon">▤</span><span class="nav-link__label">Payments</span></a><a class="nav-link" href="partners-settlements.html"><span class="nav-link__icon">⇆</span><span class="nav-link__label">Partners & Settlements</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Platform</span><a class="nav-link" href="roaming.html"><span class="nav-link__icon">↔</span><span class="nav-link__label">Roaming</span></a><a class="nav-link" href="integrations.html"><span class="nav-link__icon">⇄</span><span class="nav-link__label">ERP & Integrations</span></a><a class="nav-link" href="firmware.html"><span class="nav-link__icon">↻</span><span class="nav-link__label">Firmware</span></a><a class="nav-link" href="security.html"><span class="nav-link__icon">◇</span><span class="nav-link__label">Security & Certificates</span><span class="nav-link__badge">2</span></a><a class="nav-link" href="ai-automation.html"><span class="nav-link__icon">✦</span><span class="nav-link__label">AI & Automation</span><span class="nav-link__badge">2</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Governance</span><a class="nav-link" href="reports-audit.html"><span class="nav-link__icon">▥</span><span class="nav-link__label">Reports & Audit</span></a><a class="nav-link" href="platform-settings.html"><span class="nav-link__icon">⚙</span><span class="nav-link__label">Platform Settings</span></a></div>
+    </nav>
+    <div class="sidebar__footer"><div class="sidebar-user"><span class="sidebar-user__avatar">AG</span><div><strong>Ani Grigoryan</strong><span>Platform Administrator</span></div></div></div>
+  </aside>
+  <div class="mobile-overlay"></div>
+  <main class="app-main">
+    <header class="topbar"><div class="topbar__left"><button class="icon-button menu-button" id="menu-button" aria-label="Open menu">☰</button><div class="topbar__title"><h1>Companies</h1><p>Legal entities, brands, operating scope and company-level configuration.</p></div></div><div class="topbar__actions"><span class="platform-chip">Production healthy</span><button class="icon-button" id="refresh-button" title="Refresh" aria-label="Refresh">↻</button></div></header>
+    <div class="page-content">
+      <section class="companies-hero"><div><h2>Companies & Legal Entities</h2><p>Manage the organizations that operate on the VoltDrive platform. Each company owns its legal, commercial and access scope while chargers and live sessions remain operational objects in their dedicated portals.</p></div><div class="companies-hero__actions"><button class="button button--secondary" id="export-companies">Export CSV</button><button class="button button--primary" id="create-company">+ Add company</button></div></section>
+      <section class="companies-kpis">
+        <article class="kpi-card"><span>Total companies</span><strong id="company-kpi-total">—</strong><small>Legal entities on platform</small></article>
+        <article class="kpi-card"><span>Active</span><strong id="company-kpi-active">—</strong><small>Operating normally</small></article>
+        <article class="kpi-card"><span>Countries</span><strong id="company-kpi-countries">—</strong><small>Company operating markets</small></article>
+        <article class="kpi-card"><span>Charging sites</span><strong id="company-kpi-sites">—</strong><small>Across company scope</small></article>
+        <article class="kpi-card kpi-card--warning"><span>Setup attention</span><strong id="company-kpi-attention">—</strong><small>Incomplete or suspended</small></article>
+      </section>
+      <section class="companies-layout">
+        <section class="panel company-table"><div class="panel__header"><div><h2>Company Registry</h2><p>Platform organizations and their current configuration state.</p></div><span class="panel-chip" id="company-result-count">— companies</span></div>
+          <div class="company-toolbar">
+            <label class="form-field company-search"><span>Search</span><input id="company-search" type="search" placeholder="Company, legal name, ID or brand"></label>
+            <label class="form-field"><span>Country</span><select id="company-country"><option value="all">All countries</option></select></label>
+            <label class="form-field"><span>Status</span><select id="company-status"><option value="all">All statuses</option><option value="active">Active</option><option value="setup">Setup</option><option value="suspended">Suspended</option></select></label>
+            <div class="toolbar-actions"><button class="action-button" id="reset-company-filters">Reset filters</button></div>
+          </div>
+          <div class="table-wrap"><table class="data-table"><thead><tr><th>Company</th><th>Legal entity</th><th>Country</th><th>Type</th><th>Sites</th><th>Users</th><th>Billing</th><th>Status</th></tr></thead><tbody id="company-table-body"></tbody></table><div class="table-empty" id="company-empty" hidden>No companies match the current filters.</div></div>
+        </section>
+        <aside class="companies-side">
+          <section class="panel"><div class="panel__header"><div><h2>Operating Footprint</h2><p>Companies, sites and users grouped by country.</p></div></div><div class="panel__body"><div class="company-scope-list" id="company-scope-list"></div></div></section>
+          <section class="panel"><div class="panel__header"><div><h2>Setup Health</h2><p>Company configuration that needs administrative attention.</p></div></div><div class="panel__body"><div class="setup-list" id="company-setup-list"></div></div></section>
+        </aside>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="ui-drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="ui-drawer" id="admin-drawer"><header class="ui-drawer__header"><div><h2 id="drawer-title">Company</h2><p id="drawer-subtitle"></p></div><button class="ui-close" id="drawer-close" aria-label="Close">×</button></header><div class="ui-drawer__body" id="drawer-body"></div><footer class="ui-drawer__footer" id="drawer-footer"></footer></aside>
+<div class="ui-toast" id="ui-toast" role="status" aria-live="polite"></div>
+<script src="js/core/admin-state.js"></script>
+<script src="js/pages/companies.js"></script>
+<script src="js/layout/common.js"></script>
+</body>
+</html>

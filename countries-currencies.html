@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Countries & Currencies · VoltDrive Admin Portal</title>
+  <link rel="stylesheet" href="css/core/reset.css">
+  <link rel="stylesheet" href="css/core/variables.css">
+  <link rel="stylesheet" href="css/core/typography.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="stylesheet" href="css/components/admin-ui.css">
+  <link rel="stylesheet" href="css/layout/app-layout.css">
+  <link rel="stylesheet" href="css/layout/sidebar.css">
+  <link rel="stylesheet" href="css/layout/header.css">
+  <link rel="stylesheet" href="css/pages/countries-currencies.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand"><strong>VoltDrive</strong><span>Admin Portal</span></div>
+    <nav class="sidebar__nav">
+      <div class="sidebar__group"><span class="sidebar__group-title">Overview</span><a class="nav-link" href="dashboard.html"><span class="nav-link__icon">⌂</span><span class="nav-link__label">Admin Dashboard</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Organization</span><a class="nav-link" href="companies.html"><span class="nav-link__icon">▣</span><span class="nav-link__label">Companies</span></a><a class="nav-link" href="users-access.html"><span class="nav-link__icon">♙</span><span class="nav-link__label">Users & Access</span><span class="nav-link__badge" id="sidebar-access-badge">3</span></a><a class="nav-link is-active" href="countries-currencies.html"><span class="nav-link__icon">◎</span><span class="nav-link__label">Countries & Currencies</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Commercial</span><a class="nav-link" href="tariffs.html"><span class="nav-link__icon">¤</span><span class="nav-link__label">Tariffs & Pricing</span></a><a class="nav-link" href="taxes.html"><span class="nav-link__icon">%</span><span class="nav-link__label">Taxes</span></a><a class="nav-link" href="payments.html"><span class="nav-link__icon">▤</span><span class="nav-link__label">Payments</span></a><a class="nav-link" href="partners-settlements.html"><span class="nav-link__icon">⇆</span><span class="nav-link__label">Partners & Settlements</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Platform</span><a class="nav-link" href="roaming.html"><span class="nav-link__icon">↔</span><span class="nav-link__label">Roaming</span></a><a class="nav-link" href="integrations.html"><span class="nav-link__icon">⇄</span><span class="nav-link__label">ERP & Integrations</span></a><a class="nav-link" href="firmware.html"><span class="nav-link__icon">↻</span><span class="nav-link__label">Firmware</span></a><a class="nav-link" href="security.html"><span class="nav-link__icon">◇</span><span class="nav-link__label">Security & Certificates</span><span class="nav-link__badge">2</span></a><a class="nav-link" href="ai-automation.html"><span class="nav-link__icon">✦</span><span class="nav-link__label">AI & Automation</span><span class="nav-link__badge">2</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Governance</span><a class="nav-link" href="reports-audit.html"><span class="nav-link__icon">▥</span><span class="nav-link__label">Reports & Audit</span></a><a class="nav-link" href="platform-settings.html"><span class="nav-link__icon">⚙</span><span class="nav-link__label">Platform Settings</span></a></div>
+    </nav>
+    <div class="sidebar__footer"><div class="sidebar-user"><span class="sidebar-user__avatar">AG</span><div><strong>Ani Grigoryan</strong><span>Platform Administrator</span></div></div></div>
+  </aside>
+  <div class="mobile-overlay"></div>
+  <main class="app-main">
+    <header class="topbar"><div class="topbar__left"><button class="icon-button menu-button" id="menu-button" aria-label="Open menu">☰</button><div class="topbar__title"><h1>Countries & Currencies</h1><p>Market defaults for locale, timezone, currency, tax readiness and settlement support.</p></div></div><div class="topbar__actions"><span class="platform-chip">Global configuration</span><button class="icon-button" id="refresh-button" title="Refresh" aria-label="Refresh">↻</button></div></header>
+    <div class="page-content">
+      <section class="market-hero">
+        <div><h2>Market Configuration</h2><p>Configure the country-level defaults used when VoltDrive enters a market. These settings define the default currency, language and locale, timezone, tax profile, legal terms and payment region that downstream company, tariff, payment and ERP modules inherit.</p></div>
+        <div class="market-hero__actions"><button class="button button--secondary" id="add-currency">+ Add currency</button><button class="button button--primary" id="add-country">+ Add country</button></div>
+      </section>
+
+      <section class="market-kpis">
+        <article class="kpi-card"><span>Configured countries</span><strong id="market-kpi-countries">—</strong><small>Platform market profiles</small></article>
+        <article class="kpi-card"><span>Live markets</span><strong id="market-kpi-live">—</strong><small>Available for production</small></article>
+        <article class="kpi-card"><span>Charging currencies</span><strong id="market-kpi-charging">—</strong><small>Available for driver pricing</small></article>
+        <article class="kpi-card"><span>Settlement currencies</span><strong id="market-kpi-settlement">—</strong><small>Partner / ERP settlement</small></article>
+        <article class="kpi-card kpi-card--warning"><span>Setup issues</span><strong id="market-kpi-issues">—</strong><small>Market configuration attention</small></article>
+      </section>
+
+      <section class="market-tabs" role="tablist" aria-label="Market configuration sections">
+        <button class="market-tab is-active" data-tab="countries" role="tab">Countries <span id="country-tab-count">—</span></button>
+        <button class="market-tab" data-tab="currencies" role="tab">Currencies <span id="currency-tab-count">—</span></button>
+      </section>
+
+      <section class="market-view is-active" data-view="countries">
+        <div class="market-layout">
+          <section class="panel market-table-panel">
+            <div class="panel__header"><div><h2>Country Profiles</h2><p>Production readiness and defaults for each operating market.</p></div><span class="panel-chip" id="country-result-count">— countries</span></div>
+            <div class="market-toolbar"><label class="form-field market-search"><span>Search</span><input id="country-search" type="search" placeholder="Country, ISO, locale or currency"></label><label class="form-field"><span>Market status</span><select id="country-market-filter"><option value="all">All market states</option><option value="live">Live</option><option value="setup">Setup</option><option value="disabled">Disabled</option></select></label><button class="action-button market-reset" id="reset-country-filters">Reset</button></div>
+            <div class="table-wrap"><table class="data-table country-table"><thead><tr><th>Country</th><th>Market</th><th>Currency</th><th>Locale / Language</th><th>Timezone</th><th>Tax profile</th><th>Companies</th><th>Sites</th><th>Status</th></tr></thead><tbody id="country-table-body"></tbody></table><div class="table-empty" id="country-empty" hidden>No countries match the current filters.</div></div>
+          </section>
+          <aside class="market-side">
+            <section class="panel"><div class="panel__header"><div><h2>Market Readiness</h2><p>Configuration items blocking production readiness.</p></div></div><div class="panel__body"><div class="readiness-list" id="market-readiness-list"></div></div></section>
+            <section class="panel"><div class="panel__header"><div><h2>Inheritance Rules</h2><p>How country defaults flow into other modules.</p></div></div><div class="panel__body inheritance-list"><div class="inheritance-row"><span class="inheritance-row__icon">▣</span><div><strong>Companies</strong><span>New companies inherit country currency and timezone.</span></div></div><div class="inheritance-row"><span class="inheritance-row__icon">%</span><div><strong>Taxes</strong><span>Country tax profile becomes the default commercial tax context.</span></div></div><div class="inheritance-row"><span class="inheritance-row__icon">¤</span><div><strong>Tariffs & Payments</strong><span>Charging prices start from the market currency and payment region.</span></div></div><div class="inheritance-row"><span class="inheritance-row__icon">⇄</span><div><strong>ERP & Invoices</strong><span>Locale, tax and invoice profiles drive future accounting mappings.</span></div></div></div></section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="market-view" data-view="currencies">
+        <section class="panel market-table-panel">
+          <div class="panel__header"><div><h2>Currency Registry</h2><p>Charging, wallet and settlement currencies available across the platform.</p></div><span class="panel-chip" id="currency-result-count">— currencies</span></div>
+          <div class="currency-summary" id="currency-summary"></div>
+          <div class="market-toolbar currency-toolbar"><label class="form-field market-search"><span>Search</span><input id="currency-search" type="search" placeholder="Currency code or name"></label><label class="form-field"><span>Usage</span><select id="currency-usage-filter"><option value="all">All usage</option><option value="charging">Charging enabled</option><option value="settlement">Settlement enabled</option><option value="unused">Not assigned to a country</option></select></label><button class="action-button market-reset" id="reset-currency-filters">Reset</button></div>
+          <div class="table-wrap"><table class="data-table currency-table"><thead><tr><th>Currency</th><th>Symbol</th><th>Decimals</th><th>Charging</th><th>Settlement</th><th>Exchange-rate mode</th><th>Rate to AMD</th><th>Countries</th><th>Status</th></tr></thead><tbody id="currency-table-body"></tbody></table><div class="table-empty" id="currency-empty" hidden>No currencies match the current filters.</div></div>
+        </section>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="ui-drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="ui-drawer" id="admin-drawer"><header class="ui-drawer__header"><div><h2 id="drawer-title">Market configuration</h2><p id="drawer-subtitle"></p></div><button class="ui-close" id="drawer-close" aria-label="Close">×</button></header><div class="ui-drawer__body" id="drawer-body"></div><footer class="ui-drawer__footer" id="drawer-footer"></footer></aside>
+<div class="ui-toast" id="ui-toast" role="status" aria-live="polite"></div>
+<script src="js/core/admin-state.js"></script>
+<script src="js/pages/countries-currencies.js"></script>
+<script src="js/layout/common.js"></script>
+</body>
+</html>

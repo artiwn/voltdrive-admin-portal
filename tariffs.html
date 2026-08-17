@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <title>Tariffs & Pricing · VoltDrive Admin</title>
+  <link rel="stylesheet" href="css/core/variables.css">
+  <link rel="stylesheet" href="css/core/reset.css">
+  <link rel="stylesheet" href="css/core/typography.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="stylesheet" href="css/components/admin-ui.css">
+  <link rel="stylesheet" href="css/layout/app-layout.css">
+  <link rel="stylesheet" href="css/layout/sidebar.css">
+  <link rel="stylesheet" href="css/layout/header.css">
+  <link rel="stylesheet" href="css/pages/tariffs.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand"><strong>VoltDrive</strong><span>Admin Portal</span></div>
+    <nav class="sidebar__nav">
+      <div class="sidebar__group"><span class="sidebar__group-title">Overview</span><a class="nav-link" href="dashboard.html"><span class="nav-link__icon">⌂</span><span class="nav-link__label">Admin Dashboard</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Organization</span><a class="nav-link" href="companies.html"><span class="nav-link__icon">▣</span><span class="nav-link__label">Companies</span></a><a class="nav-link" href="users-access.html"><span class="nav-link__icon">♙</span><span class="nav-link__label">Users & Access</span><span class="nav-link__badge" id="sidebar-access-badge">3</span></a><a class="nav-link" href="countries-currencies.html"><span class="nav-link__icon">◎</span><span class="nav-link__label">Countries & Currencies</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Commercial</span><a class="nav-link is-active" href="tariffs.html"><span class="nav-link__icon">¤</span><span class="nav-link__label">Tariffs & Pricing</span></a><a class="nav-link" href="taxes.html"><span class="nav-link__icon">%</span><span class="nav-link__label">Taxes</span></a><a class="nav-link" href="payments.html"><span class="nav-link__icon">▤</span><span class="nav-link__label">Payments</span></a><a class="nav-link" href="partners-settlements.html"><span class="nav-link__icon">⇆</span><span class="nav-link__label">Partners & Settlements</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Platform</span><a class="nav-link" href="roaming.html"><span class="nav-link__icon">↔</span><span class="nav-link__label">Roaming</span></a><a class="nav-link" href="integrations.html"><span class="nav-link__icon">⇄</span><span class="nav-link__label">ERP & Integrations</span></a><a class="nav-link" href="firmware.html"><span class="nav-link__icon">↻</span><span class="nav-link__label">Firmware</span></a><a class="nav-link" href="security.html"><span class="nav-link__icon">◇</span><span class="nav-link__label">Security & Certificates</span><span class="nav-link__badge">2</span></a><a class="nav-link" href="ai-automation.html"><span class="nav-link__icon">✦</span><span class="nav-link__label">AI & Automation</span><span class="nav-link__badge">2</span></a></div>
+      <div class="sidebar__group"><span class="sidebar__group-title">Governance</span><a class="nav-link" href="reports-audit.html"><span class="nav-link__icon">▥</span><span class="nav-link__label">Reports & Audit</span></a><a class="nav-link" href="platform-settings.html"><span class="nav-link__icon">⚙</span><span class="nav-link__label">Platform Settings</span></a></div>
+    </nav>
+    <div class="sidebar__footer"><div class="sidebar-user"><span class="sidebar-user__avatar">AG</span><div><strong>Ani Grigoryan</strong><span>Platform Administrator</span></div></div></div>
+  </aside>
+  <div class="mobile-overlay"></div>
+  <main class="app-main">
+    <header class="topbar"><div class="topbar__left"><button class="icon-button menu-button" id="menu-button" aria-label="Open menu">☰</button><div class="topbar__title"><h1>Tariffs & Pricing</h1><p>Charging prices, fees, discounts, scopes, schedules and publication lifecycle.</p></div></div><div class="topbar__actions"><span class="platform-chip">Commercial configuration</span><button class="icon-button" id="refresh-button" title="Refresh" aria-label="Refresh">↻</button></div></header>
+    <div class="page-content">
+      <section class="tariff-hero"><div><h2>Pricing Administration</h2><p>Configure how charging sessions are priced by market, company, site, charger class and customer audience. Tariffs combine energy, time, connection, reservation, parking and idle fees with discounts and tax profiles.</p></div><div class="tariff-hero__actions"><button class="button button--secondary" id="export-tariffs">Export CSV</button><button class="button button--primary" id="add-tariff">+ Add tariff</button></div></section>
+
+      <section class="tariff-kpis">
+        <article class="kpi-card"><span>Total tariffs</span><strong id="tariff-kpi-total">—</strong><small>Pricing profiles in the registry</small></article>
+        <article class="kpi-card"><span>Active</span><strong id="tariff-kpi-active">—</strong><small>Published for current use</small></article>
+        <article class="kpi-card"><span>Scheduled</span><strong id="tariff-kpi-scheduled">—</strong><small>Future effective pricing</small></article>
+        <article class="kpi-card"><span>Markets covered</span><strong id="tariff-kpi-markets">—</strong><small>Countries with configured pricing</small></article>
+        <article class="kpi-card kpi-card--warning"><span>Draft / blocked</span><strong id="tariff-kpi-draft">—</strong><small>Require review before publication</small></article>
+      </section>
+
+      <section class="tariff-layout">
+        <section class="panel tariff-table-panel">
+          <div class="panel__header"><div><h2>Tariff Registry</h2><p>Versioned pricing profiles and their operational scope.</p></div><span class="panel-chip" id="tariff-result-count">— tariffs</span></div>
+          <div class="tariff-toolbar">
+            <label class="form-field tariff-search"><span>Search</span><input id="tariff-search" type="search" placeholder="Tariff, scope, audience or connector class"></label>
+            <label class="form-field"><span>Country</span><select id="tariff-country-filter"><option value="all">All countries</option></select></label>
+            <label class="form-field"><span>Audience</span><select id="tariff-audience-filter"><option value="all">All audiences</option><option>Driver</option><option>Fleet</option><option>Member</option><option>Roaming</option></select></label>
+            <label class="form-field"><span>Status</span><select id="tariff-status-filter"><option value="all">All statuses</option><option value="active">Active</option><option value="scheduled">Scheduled</option><option value="draft">Draft</option><option value="archived">Archived</option></select></label>
+            <button class="action-button tariff-reset" id="reset-tariff-filters">Reset</button>
+          </div>
+          <div class="table-wrap"><table class="data-table tariff-table"><thead><tr><th>Tariff</th><th>Scope</th><th>Market</th><th>Base pricing</th><th>Additional fees</th><th>Discount</th><th>Tax</th><th>Schedule</th><th>Status</th></tr></thead><tbody id="tariff-table-body"></tbody></table><div class="table-empty" id="tariff-empty" hidden>No tariffs match the current filters.</div></div>
+        </section>
+
+        <aside class="tariff-side">
+          <section class="panel"><div class="panel__header"><div><h2>Market Coverage</h2><p>Pricing readiness by configured country.</p></div></div><div class="panel__body"><div class="tariff-market-list" id="tariff-market-list"></div></div></section>
+          <section class="panel"><div class="panel__header"><div><h2>Session Price Simulator</h2><p>Prototype calculation for one selected tariff.</p></div></div><div class="panel__body"><div class="tariff-simulator">
+            <label class="form-field"><span>Tariff</span><select id="sim-tariff"></select></label>
+            <div class="simulator-grid"><label class="form-field"><span>Energy</span><div class="unit-input"><input id="sim-energy" type="number" min="0" step="0.1" value="42.5"><span>kWh</span></div></label><label class="form-field"><span>Charging duration</span><div class="unit-input"><input id="sim-minutes" type="number" min="0" step="1" value="42"><span>min</span></div></label></div>
+            <label class="tariff-check"><input id="sim-reservation" type="checkbox" checked> Include reservation fee</label>
+            <label class="tariff-check"><input id="sim-parking" type="checkbox"> Include 60 min parking fee</label>
+            <label class="tariff-check"><input id="sim-idle" type="checkbox"> Include 10 min idle fee</label>
+            <div class="simulator-result" id="sim-result"></div>
+          </div></div></section>
+        </aside>
+      </section>
+
+      <section class="panel tariff-components-panel"><div class="panel__header"><div><h2>Pricing Composition</h2><p>Comparison of monetary components across configured tariffs.</p></div><span class="panel-chip">Energy + time + fees − discount + tax</span></div><div class="table-wrap"><table class="data-table components-table"><thead><tr><th>Tariff</th><th>Energy / kWh</th><th>Minute</th><th>Connection</th><th>Reservation</th><th>Parking / min</th><th>Idle / min</th><th>Discount</th></tr></thead><tbody id="tariff-components-body"></tbody></table></div></section>
+    </div>
+  </main>
+</div>
+
+<div class="ui-drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="ui-drawer" id="admin-drawer"><header class="ui-drawer__header"><div><h2 id="drawer-title">Tariff</h2><p id="drawer-subtitle"></p></div><button class="ui-close" id="drawer-close" aria-label="Close">×</button></header><div class="ui-drawer__body" id="drawer-body"></div><footer class="ui-drawer__footer" id="drawer-footer"></footer></aside>
+<div class="ui-toast" id="ui-toast" role="status" aria-live="polite"></div>
+<script src="js/core/admin-state.js"></script>
+<script src="js/pages/tariffs.js"></script>
+<script src="js/layout/common.js"></script>
+</body>
+</html>
