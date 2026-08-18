@@ -5,6 +5,15 @@
   "scripts": {
     "check": "node scripts/check.js",
     "smoke": "node scripts/smoke-state.js",
-    "verify": "npm run check && npm run smoke"
+    "verify": "npm run check && npm run smoke && npm run smoke:reports && npm run smoke:reports-page && npm run smoke:context && npm run smoke:functional && npm run smoke:functional-pages && npm run smoke:functional-migration && npm run smoke:integrity && npm run smoke:browser",
+    "smoke:reports": "node scripts/smoke-report-migration.js",
+    "smoke:reports-page": "node scripts/smoke-reports-page.js",
+    "smoke:context": "node scripts/smoke-context-navigation.js",
+    "smoke:functional": "node scripts/smoke-functional-gaps.js",
+    "smoke:functional-pages": "node scripts/smoke-functional-pages.js",
+    "smoke:functional-migration": "node scripts/smoke-functional-migration.js",
+    "smoke:integrity": "node scripts/smoke-data-integrity.js",
+    "smoke:browser": "node scripts/browser-regression.js",
+    "smoke:browser:strict": "node scripts/browser-regression.js --strict"
   }
 }
