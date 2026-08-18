@@ -1,4 +1,5 @@
 (function(){
+  if(!window.VoltDriveAdmin?.canAccessAdminModule?.('admin.portal.view'))return;
   const api=window.VoltDriveAdmin;
   let state=api.getState();
   const $=(s)=>document.querySelector(s);
@@ -111,7 +112,7 @@
     $('#access-close').onclick=closeDrawer;$('#access-module').onclick=()=>{location.href='users-access.html';};
   }
   function renderQuickLinks(){
-    const targetPermission={companies:'companies.view',access:'users.view',tariffs:'tariffs.view',countries:'markets.view',taxes:'taxes.view',erp:'integrations.view',security:'security.view'};
+    const targetPermission={companies:'companies.view',access:'users.view',tariffs:'tariffs.view',countries:'markets.view',taxes:'taxes.view',erp:'integrations.view',accounting:'accounting.view',security:'security.view'};
     document.querySelectorAll('[data-quick]').forEach(btn=>{
       const key=btn.dataset.quick;
       const permission=targetPermission[key];
@@ -123,6 +124,7 @@
         if(key==='countries'){location.href='countries-currencies.html';return;}
         if(key==='taxes'){location.href='taxes.html';return;}
         if(key==='erp'){location.href='integrations.html';return;}
+        if(key==='accounting'){location.href='accounting.html';return;}
         if(key==='security'){location.href='security.html';return;}
       });
     });

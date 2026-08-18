@@ -1,4 +1,5 @@
 (function(){
+  if(!window.VoltDriveAdmin?.canAccessAdminModule?.('taxes.view'))return;
   const api=window.VoltDriveAdmin;
   let state=api.getState();
   const $=(s)=>document.querySelector(s);
@@ -15,9 +16,9 @@
   const profileById=(id)=>state.taxProfiles.find(p=>p.id===id);
   const profileCompanies=(profile)=>state.companies.filter(c=>c.countryCode===profile.countryCode&&c.taxProfile===profile.name&&api.companyInScope(c.id));
   const isPlatformScope=()=>api.isPlatformScope?.()===true;
-  const scopedCountryCodes=()=>new Set(state.companies.filter(c=>api.companyInScope(c.id)).map(c=>c.countryCode));
-  const scopedCountries=()=>isPlatformScope()?state.countries:state.countries.filter(c=>scopedCountryCodes().has(c.code));
-  const scopedProfiles=()=>isPlatformScope()?state.taxProfiles:state.taxProfiles.filter(p=>scopedCountryCodes().has(p.countryCode));
+  const scopedCountryCodes=()=>new Set(state.companies.filter(c=>api.companyInScope(c.id)&&api.companyContextMatch(c.id)&&api.countryContextMatch(c.countryCode)).map(c=>c.countryCode));
+  const scopedCountries=()=>state.countries.filter(c=>api.countryInScope(c.code)&&api.countryContextMatch(c.code)&&(api.companyContextId()?scopedCountryCodes().has(c.code):true));
+  const scopedProfiles=()=>state.taxProfiles.filter(p=>api.countryInScope(p.countryCode)&&api.countryContextMatch(p.countryCode)&&(api.companyContextId()?scopedCountryCodes().has(p.countryCode):true));
   const pill=(value)=>`<span class="ui-pill status-${slug(value||'disabled')}">${esc(value)}</span>`;
   const componentLabels={energy:'Energy',chargingMinute:'Charging minute',connection:'Connection fee',reservation:'Reservation',parking:'Parking',idle:'Idle fee'};
   const taxableCount=(p)=>Object.values(p.taxable||{}).filter(Boolean).length;

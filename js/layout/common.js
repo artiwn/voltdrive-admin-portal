@@ -42,19 +42,22 @@
     'tariffs.html':{view:'tariffs.view',manage:'tariffs.edit'},
     'taxes.html':{view:'taxes.view',manage:'taxes.manage'},
     'payments.html':{view:'payments.view',manage:'payments.manage'},
+    'accounting.html':{view:'accounting.view',manage:'accounting.manage'},
     'partners-settlements.html':{view:'settlements.view',manage:'settlements.manage'},
-    'roaming.html':{view:'roaming.view',manage:'roaming.manage'},
+    'roaming.html':{view:'roaming.view',manage:'roaming.manage',scope:'platform'},
     'integrations.html':{view:'integrations.view',manage:'integrations.manage'},
-    'firmware.html':{view:'firmware.view',manage:'firmware.manage'},
-    'security.html':{view:'security.view',manage:'security.certificates.manage'},
-    'ai-automation.html':{view:'ai.view',manage:'ai.manage'},
-    'energy-optimization.html':{view:'energy.view',manage:'energy.manage'},
+    'firmware.html':{view:'firmware.view',manage:'firmware.manage',scope:'platform'},
+    'security.html':{view:'security.view',manage:'security.certificates.manage',scope:'platform'},
+    'ai-automation.html':{view:'ai.view',manage:'ai.manage',scope:'platform'},
+    'energy-optimization.html':{view:'energy.view',manage:'energy.manage',scope:'platform'},
     'reports-audit.html':{view:'audit.view',manage:'reports.manage'},
-    'platform-settings.html':{view:'platform.settings.view',manage:'platform.settings.manage'}
+    'platform-settings.html':{view:'platform.settings.view',manage:'platform.settings.manage',scope:'platform'}
   };
   const page=(location.pathname.split('/').pop()||'dashboard.html').toLowerCase();
   const access=PAGE_ACCESS[page];
   const can=(permission)=>!permission||api?.can?.(permission);
+  const hasPortalAccess=()=>Boolean(api?.can?.('admin.portal.view'));
+  const canViewRule=(rule)=>Boolean(rule&&api?.canAccessAdminModule?.(rule.view,{platformOnly:rule.scope==='platform'}));
 
   // Sidebar identity follows the active prototype session rather than hard-coded markup.
   const currentUser=api?.currentUser?.();
@@ -74,7 +77,7 @@
   document.querySelectorAll('.sidebar a.nav-link[href]').forEach(link=>{
     const target=(link.getAttribute('href')||'').split('?')[0];
     const rule=PAGE_ACCESS[target];
-    if(rule&&!can(rule.view)){
+    if(rule&&!canViewRule(rule)){
       link.classList.add('is-access-locked');
       link.setAttribute('aria-disabled','true');
       link.title='Not available for the current role';
@@ -84,12 +87,15 @@
 
   function renderAccessDenied(){
     const content=document.querySelector('.page-content');
-    if(!content||!access||can(access.view))return false;
+    if(!content||!access||canViewRule(access))return false;
     content.classList.add('is-access-denied');
     content.setAttribute('inert','');
+    const portalDenied=!hasPortalAccess();
+    const scopeDenied=!portalDenied&&access.scope==='platform'&&!api?.isPlatformScope?.();
+    const missingPermission=portalDenied?'admin.portal.view':access.view;
     const panel=document.createElement('section');
     panel.className='access-denied-panel';
-    panel.innerHTML=`<span class="access-denied-panel__icon">◇</span><div><h2>Access restricted</h2><p>Your current role does not include <strong>${access.view}</strong>. Use Users & Access to review the assigned role and scope.</p></div><a class="button button--secondary" href="dashboard.html">Return to Dashboard</a>`;
+    panel.innerHTML=`<span class="access-denied-panel__icon">◇</span><div><h2>Access restricted</h2><p>${portalDenied?'This role is assigned to a role-specific interface and cannot enter the Admin Portal.':scopeDenied?'This module contains platform-wide configuration and requires Platform scope.':'Your current Admin Portal role does not include this module.'}${scopeDenied?'':` Missing permission: <strong>${missingPermission}</strong>.`}</p></div>${portalDenied?'':`<a class="button button--secondary" href="dashboard.html">Return to Dashboard</a>`}`;
     content.parentNode.insertBefore(panel,content);
     return true;
   }
@@ -125,6 +131,37 @@
     const aiApprovals=(adminState.aiApprovals||[]).filter(item=>item.status==='review').length;
     document.querySelectorAll('a[href="ai-automation.html"] .nav-link__badge').forEach(badge=>{badge.textContent=aiApprovals;badge.hidden=aiApprovals===0;});
   }
+  const COMPANY_CONTEXT_PAGES=new Set(['companies.html','users-access.html','tariffs.html','taxes.html','payments.html','accounting.html','partners-settlements.html','integrations.html','reports-audit.html']);
+  const contextCompany=api?.companyContext?.();
+  const MARKET_CONTEXT_PAGES=new Set(['countries-currencies.html','tariffs.html','taxes.html','payments.html']);
+  if(contextCompany&&COMPANY_CONTEXT_PAGES.has(page)){
+    // Preserve the selected legal entity while the administrator moves through company-aware modules.
+    document.querySelectorAll('.sidebar a.nav-link[href]').forEach(link=>{
+      const target=(link.getAttribute('href')||'').split('?')[0];
+      if(COMPANY_CONTEXT_PAGES.has(target)&&!link.classList.contains('is-access-locked'))link.href=api.contextUrl(target,contextCompany.id);
+    });
+    const content=document.querySelector('.page-content');
+    if(content&&!content.querySelector('.company-context-bar')){
+      const bar=document.createElement('section');
+      bar.className='company-context-bar';
+      bar.innerHTML=`<div class="company-context-bar__identity"><span class="company-context-bar__icon">▣</span><div><span>Company context</span><strong>${String(contextCompany.name||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}</strong><small>${String(contextCompany.country||contextCompany.countryCode||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))} · ${String(contextCompany.currency||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}</small></div></div><div class="company-context-bar__actions"><a class="button button--secondary button--compact" href="${page}">Clear context</a><a class="button button--secondary button--compact" href="${api.contextUrl('companies.html',contextCompany.id)}">Company profile</a></div>`;
+      content.insertBefore(bar,content.firstChild);
+    }
+  }
+  const contextCountry=!contextCompany?api?.countryContext?.():null;
+  if(contextCountry&&MARKET_CONTEXT_PAGES.has(page)){
+    document.querySelectorAll('.sidebar a.nav-link[href]').forEach(link=>{
+      const target=(link.getAttribute('href')||'').split('?')[0];
+      if(MARKET_CONTEXT_PAGES.has(target)&&!link.classList.contains('is-access-locked'))link.href=api.countryContextUrl(target,contextCountry.code);
+    });
+    const content=document.querySelector('.page-content');
+    if(content&&!content.querySelector('.company-context-bar')){
+      const bar=document.createElement('section');bar.className='company-context-bar';
+      bar.innerHTML=`<div class="company-context-bar__identity"><span class="company-context-bar__icon">◎</span><div><span>Market context</span><strong>${String(contextCountry.name||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}</strong><small>${String(contextCountry.code||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))} · ${String(contextCountry.currency||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}</small></div></div><div class="company-context-bar__actions"><a class="button button--secondary button--compact" href="${page}">Clear context</a><a class="button button--secondary button--compact" href="${api.countryContextUrl('countries-currencies.html',contextCountry.code)}">Market profile</a></div>`;
+      content.insertBefore(bar,content.firstChild);
+    }
+  }
+
   const refresh=document.getElementById('refresh-button');
   refresh?.addEventListener('click',()=>{
     refresh.animate([{transform:'rotate(0deg)'},{transform:'rotate(360deg)'}],{duration:420,easing:'ease-out'});

@@ -1,4 +1,5 @@
 (function(){
+  if(!window.VoltDriveAdmin?.canAccessAdminModule?.('security.view',{platformOnly:true}))return;
   const api=window.VoltDriveAdmin;let state=api.getState();const $=s=>document.querySelector(s);const $$=s=>[...document.querySelectorAll(s)];
   const esc=(v='')=>String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const statusClass=status=>{const s=String(status||'disabled').toLowerCase();if(['revoked','blocked','open'].includes(s))return 'status-critical';if(['resolved','released','valid'].includes(s))return 'status-healthy';return `status-${s.replace(/\s+/g,'-')}`;};
@@ -8,7 +9,7 @@
   function closeDrawer(){ $('#drawer-backdrop').classList.remove('is-visible');$('#admin-drawer').classList.remove('is-open'); }
   $('#drawer-close')?.addEventListener('click',closeDrawer);$('#drawer-backdrop')?.addEventListener('click',closeDrawer);
   function persist(){api.save();state=api.getState();}
-  function addAudit(icon,title,detail){api.addAudit({icon,title,detail});state.audit=state.audit.slice(0,250);}
+  function addAudit(icon,title,detail){api.addAudit({icon,title,detail});}
   function addSecurityEvent(severity,category,title,detail,actor=(api.currentUser()?.name||'Platform Administrator'),status='review'){state.securityEvents.unshift({id:api.nextId('SEV',state.securityEvents),time:timeLabel(),severity,category,title,detail,actor,status});state.securityEvents=state.securityEvents.slice(0,80);}
   function daysRemaining(c){if(!c.expiresAt)return null;const end=new Date(`${c.expiresAt}T23:59:59`);return Math.ceil((end-nowDate())/86400000);}
   function certBadge(type=''){const t=type.toLowerCase();if(t.includes('csms'))return 'CS';if(t.includes('roaming'))return 'RO';if(t.includes('firmware'))return 'FW';if(t.includes('erp'))return '1C';if(t.includes('sso'))return 'SSO';if(t.includes('charger'))return 'EV';if(t.includes('web'))return 'WEB';if(t.includes('api'))return 'API';if(t.includes('webhook'))return 'WH';return 'CRT';}

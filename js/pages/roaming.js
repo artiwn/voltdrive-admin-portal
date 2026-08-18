@@ -1,4 +1,5 @@
 (function(){
+  if(!window.VoltDriveAdmin?.canAccessAdminModule?.('roaming.view',{platformOnly:true}))return;
   const api=window.VoltDriveAdmin;let state=api.getState();
   const $=s=>document.querySelector(s);const esc=(v='')=>String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const slug=v=>String(v||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -11,7 +12,7 @@
   function fmtDate(value){if(!value||/not|never|—/i.test(value))return value||'—';const d=new Date(`${value}T00:00:00`);return Number.isNaN(d.getTime())?value:d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
   function daysUntil(value){const d=new Date(`${value}T00:00:00`);if(Number.isNaN(d.getTime()))return Infinity;return Math.ceil((d-Date.now())/86400000);}
   function partnerReady(p){return p.connectionStatus==='connected'&&p.agreementStatus==='active'&&p.certificateStatus==='valid'&&!/not configured|setup required/i.test(p.endpoint||'');}
-  function addAudit(icon,title,detail){api.addAudit({icon,title,detail});state.audit=state.audit.slice(0,250);}
+  function addAudit(icon,title,detail){api.addAudit({icon,title,detail});}
   function exchangeMini(p){const items=[['LOC',p.locations],['TAR',p.tariffs],['AVL',p.availability],['SES',p.sessions],['CDR',p.cdrs],['RSV',p.reservations]];return `<div class="exchange-mini">${items.map(([label,on])=>`<span class="exchange-mini__item ${on?'is-on':''}" title="${esc(label)}">${esc(label)}</span>`).join('')}</div>`;}
   function renderKpis(){const partners=state.roamingPartners;$('#roaming-kpi-partners').textContent=partners.length;$('#roaming-kpi-connected').textContent=partners.filter(p=>p.connectionStatus==='connected').length;$('#roaming-kpi-locations').textContent=partners.reduce((n,p)=>n+(Number(p.locationsShared)||0),0).toLocaleString();$('#roaming-kpi-sessions').textContent=partners.reduce((n,p)=>n+(Number(p.sessionsMtd)||0),0).toLocaleString();$('#roaming-kpi-settlement').textContent=state.roamingSettlements.filter(r=>!['paid','blocked'].includes(r.settlementStatus)).length;$('#roaming-kpi-disputes').textContent=state.roamingDisputes.filter(d=>d.status!=='resolved').length;}
   function filteredPartners(){const q=$('#roaming-search').value.trim().toLowerCase(),connection=$('#roaming-connection').value,agreement=$('#roaming-agreement').value;return state.roamingPartners.filter(p=>{const hay=[p.id,p.name,p.legalName,p.country,p.agreementId,p.businessCode,p.partyId,p.protocol,p.partnerRole].join(' ').toLowerCase();return(!q||hay.includes(q))&&(connection==='all'||p.connectionStatus===connection)&&(agreement==='all'||p.agreementStatus===agreement);});}

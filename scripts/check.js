@@ -7,7 +7,7 @@ const files=walk(root);
 const html=files.filter(f=>f.endsWith('.html'));
 const js=files.filter(f=>f.endsWith('.js')&&!f.includes('node_modules'));
 const portalPages=[
-  'dashboard.html','companies.html','users-access.html','countries-currencies.html','tariffs.html','taxes.html','payments.html','partners-settlements.html',
+  'dashboard.html','companies.html','users-access.html','countries-currencies.html','tariffs.html','taxes.html','payments.html','accounting.html','partners-settlements.html',
   'roaming.html','integrations.html','firmware.html','security.html','ai-automation.html','energy-optimization.html','reports-audit.html','platform-settings.html'
 ];
 let errors=[];
@@ -45,13 +45,15 @@ for(const name of portalPages){
 const pageJs=files.filter(f=>f.includes(`${path.sep}js${path.sep}pages${path.sep}`)&&f.endsWith('.js'));
 for(const file of pageJs){
   const text=fs.readFileSync(file,'utf8');
+  if(!/canAccessAdminModule/.test(text)) errors.push(`Fail-closed Admin Portal guard missing: ${path.relative(root,file)}`);
   if(/state\.audit\.unshift\s*\(/.test(text)) errors.push(`Direct audit write bypasses central helper: ${path.relative(root,file)}`);
+  if(/state\.audit\s*=\s*state\.audit\.slice\s*\(/.test(text)) errors.push(`Page-level audit cap bypasses retention policy: ${path.relative(root,file)}`);
   if(/2026-08-17\s+11:\d\d|time\s*:\s*['"]11:\d\d['"]|(?:time|date|lastUpdated|paidAt|startedAt)\s*:\s*['"]Now['"]/.test(text)){
     errors.push(`Hardcoded action timestamp found: ${path.relative(root,file)}`);
   }
 }
 
-const scopedPages=['dashboard.js','companies.js','users-access.js','countries-currencies.js','tariffs.js','taxes.js','payments.js','partners-settlements.js','integrations.js','reports-audit.js'];
+const scopedPages=['dashboard.js','companies.js','users-access.js','countries-currencies.js','tariffs.js','taxes.js','payments.js','accounting.js','partners-settlements.js','integrations.js','reports-audit.js'];
 for(const name of scopedPages){
   const file=path.join(root,'js/pages',name),text=fs.readFileSync(file,'utf8');
   if(!/(companyInScope|scopedCompan|scopedCountry|scopedAudit)/.test(text)) errors.push(`Scope invariant missing: js/pages/${name}`);
@@ -60,8 +62,21 @@ const stateSource=fs.readFileSync(path.join(root,'js/core/admin-state.js'),'utf8
 for(const helper of ['today','timeNow','now','addAudit','currentUser','currentRole','can','isPlatformScope','companyInScope']){
   if(!stateSource.includes(`function ${helper}(`)) errors.push(`Admin-state helper missing: ${helper}`);
 }
+const reportsSource=fs.readFileSync(path.join(root,'js/pages/reports-audit.js'),'utf8');
+if(/const scopedAudit=[^;]*scopedAudit\(\)\.filter/.test(reportsSource)) errors.push('Reports audit recursion regression detected.');
+if(/function filteredAudit\(\).*?return state\.audit\.filter/s.test(reportsSource)) errors.push('Audit filters must start from scopedAudit(), not global state.audit.');
+if(/function renderAuditDistribution\(\).*?state\.audit\.forEach/s.test(reportsSource)) errors.push('Audit distribution must use scoped audit records.');
+if(!/requireReportManage/.test(reportsSource)||!/reports\.manage/.test(reportsSource)) errors.push('Report generation/export permission guard is missing.');
+if(/state\.audit\s*=\s*state\.audit\.slice\(0,\s*250\)/.test(stateSource)) errors.push('Fixed 250-record audit cap must not override retention policy.');
+for(const helper of ['reportInScope','auditInScope','applyRetentionPolicies']){
+  if(!stateSource.includes(`function ${helper}(`)) errors.push(`Reports/audit helper missing: ${helper}`);
+}
 const commonSource=fs.readFileSync(path.join(root,'js/layout/common.js'),'utf8');
 if(!/admin\.portal\.view/.test(commonSource)) errors.push('Admin Portal route guard is missing.');
+if(!/hasPortalAccess\(\).*admin\.portal\.view|hasPortalAccess=.*admin\.portal\.view/s.test(commonSource)) errors.push('All Admin Portal modules must require admin.portal.view.');
+for(const name of ['roaming.html','firmware.html','security.html','ai-automation.html','energy-optimization.html','platform-settings.html']){
+  if(!new RegExp(`['\"]${name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}['\"]:\{[^}]*scope:['\"]platform['\"]`).test(commonSource)) errors.push(`Platform-scope guard missing: ${name}`);
+}
 
 const integrationCss=fs.readFileSync(path.join(root,'css/pages/integrations.css'),'utf8');
 if(!/\.integration-form-grid\s+\.checkbox-item\s+input\[type="checkbox"\]\s*\{[^}]*width:16px;[^}]*height:16px;[^}]*min-width:16px;[^}]*min-height:16px;/s.test(integrationCss)){

@@ -1,4 +1,5 @@
 (function(){
+  if(!window.VoltDriveAdmin?.canAccessAdminModule?.('firmware.view',{platformOnly:true}))return;
   const api=window.VoltDriveAdmin; if(!api)return; let state=api.getState();
   const $=s=>document.querySelector(s); const esc=v=>String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const statusClass=s=>({current:'status-connected',approved:'status-approved',supported:'status-info',lab:'status-warning',draft:'status-draft',scheduled:'status-scheduled',running:'status-syncing',completed:'status-connected',failed:'status-error',rollback:'status-warning',blocked:'status-error',success:'status-connected',ready:'status-connected',warning:'status-warning',review:'status-review'}[String(s||'').toLowerCase()]||'status-disabled');
